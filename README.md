@@ -32,6 +32,7 @@ GitHub Actions 工作流：`.github/workflows/godot-web.yml`。
 - 向 `master` 提交 Pull Request：只构建验证，不发布。
 - 也可在 Actions → Godot Web build and deploy → Run workflow 手动运行。
 - 每次构建提供 `godot-web` 下载包，保留 14 天。
+- 导出资源使用内容版本号命名，避免重新部署后浏览器继续使用旧资源。
 - CI 从官方发布下载引擎和同版本 Web 模板，并校验 SHA-512。
 - Pages 的 Source 必须设置为 **GitHub Actions**；未启用时仍保留构建产物并提示，跳过部署。
 
