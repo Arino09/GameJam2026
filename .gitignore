@@ -1,0 +1,9 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# Local machine files and export credentials
+.DS_Store
+.env
+.env.*
+export_credentials.cfg
