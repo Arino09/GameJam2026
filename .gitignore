@@ -1,9 +1,21 @@
-# Godot 4+ specific ignores
+# Godot 4+ generated caches
 .godot/
+.nomedia
 /android/
 
-# Local machine files and export credentials
+# Godot-specific generated files
+.import/
+export.cfg
+export_credentials.cfg
+*.tmp
+*.translation
+
+# Mono-specific generated files
+.mono/
+data_*/
+mono_crash.*.json
+
+# Local machine files and environment secrets
 .DS_Store
 .env
 .env.*
-export_credentials.cfg
