@@ -1,0 +1,85 @@
+name: Godot Web build and deploy
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: godot-web-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GODOT_VERSION: '4.7.2'
+
+jobs:
+  build:
+    name: Build Godot Web
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      pages: read
+    outputs:
+      pages_enabled: ${{ steps.pages.outputs.enabled }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Godot and Web export templates
+        run: bash tools/install-godot-ci.sh
+      - name: Import and export Web release
+        run: bash tools/build-web.sh
+      - name: Save downloadable Web build
+        uses: actions/upload-artifact@v4
+        with:
+          name: godot-web
+          path: build/web/
+          retention-days: 14
+          if-no-files-found: error
+      - name: Check Pages availability
+        id: pages
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          if gh api "repos/${GITHUB_REPOSITORY}/pages" --jq '.build_type' > /tmp/pages-type 2>/tmp/pages-error; then
+            if [ "$(cat /tmp/pages-type)" = "workflow" ]; then
+              echo "enabled=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "enabled=false" >> "$GITHUB_OUTPUT"
+              echo '::notice::Set Settings > Pages > Source to GitHub Actions, then rerun this workflow.'
+            fi
+          elif grep -q 'HTTP 404' /tmp/pages-error; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo '::notice::Pages is not enabled. The godot-web artifact is available. Enable Pages with GitHub Actions as source, then rerun.'
+          else
+            cat /tmp/pages-error >&2
+            exit 1
+          fi
+      - name: Prepare Pages artifact
+        if: steps.pages.outputs.enabled == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web/
+
+  deploy:
+    name: Deploy GitHub Pages
+    needs: build
+    if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && needs.build.outputs.pages_enabled == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy game
+        id: deployment
+        uses: actions/deploy-pages@v4

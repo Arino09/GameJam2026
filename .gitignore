@@ -19,3 +19,6 @@ mono_crash.*.json
 .DS_Store
 .env
 .env.*
+
+# Generated Web builds
+/build/
