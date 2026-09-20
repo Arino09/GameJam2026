@@ -32,25 +32,28 @@
 
 营地点击「出发探索」进入地图 `scenes/map.tscn`，也可单独打开后按 **F6** 运行。
 
-- WASD / 方向键或左下角屏幕按钮：上下左右移动，支持斜向移动。
-- 空格或右下角攻击按钮：攻击。攻击期间可以继续移动和转向，动作不会被移动打断。
-- 屏幕按钮支持鼠标及多点触控；人物不能离开地图边界。
-- 现有素材没有独立行走帧，移动时沿用 4 帧动画。
+原动画预览 UI、预览场景和旧空白地图场景已删除。
 
-原动画预览仍可打开 `scenes/preview.tscn` 后按 **F6** 运行。
+## 验证与图集重建
 
-- 上排 4 帧：`idle`，5 FPS，循环播放。
-- 下排 7 帧：`attack`，10 FPS，带少量预备与收招停顿，播放完自动回到待机。
-- 按空格或点击 ATTACK 发起攻击；攻击期间重复输入不会重置动画。
-- FLIP 可检查水平翻转效果。
+```sh
+godot --headless --path . --editor --import --quit
+godot --headless --fixed-fps 60 --path . --script tools/test_forest.gd
+```
 
-## 在其他场景中使用
+检查移动方向、斜向速度、奔跑、双向过桥、河岸/建筑/地图边界碰撞以及地图开关。需要实际渲染截图时：
 
-实例化 `scenes/character.tscn`，把根节点放在希望角色脚底落地的位置，然后调用角色的 `attack()`。可连接 `attack_finished` 信号处理攻击结束事件。
+```sh
+godot --fixed-fps 60 --path . --script tools/test_forest.gd -- --screenshots
+```
 
-`assets/character/character_frames.tres` 是可在编辑器中调整的 SpriteFrames 资源，使用 AtlasTexture 逐帧选区和 margin 对齐脚底。材质与脚本配套使用，负责黑底透明处理及相邻攻击帧的局部遮罩；每个角色实例拥有独立材质。
+截图自动写入 `build/qa/`。已有图集可直接使用；需要从原始生成图重新规整时：
 
-输入图片原样保存在 `assets/character/character_sheet.jpg`，尺寸 2520 × 1280。由于原图是黑底 JPG，没有原生透明通道，当前材质按亮度去黑底，深色细节和边缘可能受到轻微影响。以后如有透明 PNG 原始素材，可以替换图集并移除去黑底材质。没有生成或补画新的动作帧。
+```sh
+python tools/build_elf_v2.py --pipeline <sprite-pipeline 插件的 scripts 目录>
+```
+
+图集重建需要 Pillow；运行游戏直接使用已生成资源。四方向循环预览是 `build/qa/elf_v2/walk_cycle.gif`，游戏内行走截图序列在 `build/qa/elf_v2/ingame/`。
 
 ## Web 构建与自动部署
 

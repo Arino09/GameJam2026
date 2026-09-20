@@ -1,0 +1,148 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/forest.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/maps/moonveil_forest.png" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/elf.tscn" id="3"]
+[ext_resource type="Script" path="res://scripts/forest_hud.gd" id="4"]
+
+[node name="MoonveilForest" type="Node2D"]
+texture_filter = 1
+script = ExtResource("1")
+
+[node name="MapImage" type="Sprite2D" parent="."]
+z_index = -10
+texture_filter = 1
+texture = ExtResource("2")
+centered = false
+
+[node name="Obstacles" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 2
+
+[node name="NorthWestForest" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(0, 0, 675, 0, 654, 76, 614, 116, 602, 171, 557, 210, 502, 186, 420, 183, 396, 219, 341, 211, 312, 245, 266, 231, 224, 285, 190, 352, 142, 370, 111, 427, 0, 464)
+
+[node name="NorthernGrove" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(828, 0, 1159, 0, 1145, 128, 1099, 170, 1092, 220, 1060, 268, 1003, 231, 981, 177, 934, 147, 925, 86, 876, 80)
+
+[node name="WestForest" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(0, 478, 103, 460, 174, 455, 220, 496, 253, 560, 277, 596, 310, 620, 289, 680, 250, 710, 227, 804, 195, 1024, 0, 1024)
+
+[node name="SouthWestForest" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(178, 1024, 204, 814, 256, 718, 314, 722, 370, 759, 393, 863, 469, 892, 514, 890, 551, 918, 610, 903, 668, 949, 690, 1024)
+
+[node name="SouthEastForest" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(832, 1024, 863, 943, 897, 902, 886, 848, 925, 798, 970, 828, 995, 871, 1047, 864, 1085, 847, 1115, 912, 1158, 958, 1167, 1024)
+
+[node name="EastNorthForest" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(1280, 0, 1536, 0, 1536, 459, 1490, 453, 1468, 394, 1476, 345, 1515, 319, 1497, 271, 1408, 276, 1377, 238, 1350, 203, 1348, 147, 1317, 113)
+
+[node name="EastSouthForest" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(1536, 538, 1492, 532, 1473, 558, 1493, 610, 1414, 625, 1370, 680, 1345, 748, 1355, 797, 1323, 851, 1340, 925, 1313, 1024, 1536, 1024)
+
+[node name="RiverNorth" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(1174, 0, 1309, 0, 1331, 134, 1295, 207, 1286, 291, 1306, 351, 1279, 416, 1277, 454, 1164, 454, 1169, 393, 1149, 347, 1170, 283, 1170, 240, 1150, 201, 1160, 137, 1191, 72)
+
+[node name="RiverSouth" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(1164, 505, 1278, 505, 1268, 568, 1255, 635, 1244, 677, 1274, 747, 1247, 808, 1265, 870, 1290, 925, 1316, 1024, 1170, 1024, 1156, 948, 1173, 889, 1152, 841, 1131, 778, 1118, 727, 1145, 651, 1128, 598, 1142, 550)
+
+[node name="MoonArch" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(718, 60, 776, 34, 845, 72, 848, 168, 816, 180, 739, 177, 714, 156)
+
+[node name="ShrineWestPillars" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(679, 153, 715, 137, 730, 222, 739, 239, 730, 260, 714, 253, 714, 218, 689, 205, 676, 177)
+
+[node name="ShrineEastPillars" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(852, 144, 888, 157, 894, 191, 868, 220, 849, 227, 844, 250, 826, 256, 822, 237, 836, 218)
+
+[node name="RuinBackWall" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(309, 277, 367, 294, 372, 252, 400, 231, 437, 250, 449, 300, 452, 332, 420, 339, 377, 340, 340, 326, 307, 307)
+
+[node name="RuinEastPillar" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(483, 311, 505, 305, 508, 359, 483, 365)
+
+[node name="RuinWestWall" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(242, 350, 260, 343, 263, 371, 292, 361, 293, 341, 313, 335, 317, 374, 345, 371, 355, 355, 373, 358, 374, 387, 341, 408, 340, 439, 321, 448, 317, 414, 282, 398, 253, 414, 232, 418)
+
+[node name="EastRuinedArch" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(1420, 284, 1447, 267, 1473, 287, 1484, 332, 1467, 345, 1424, 337)
+
+[node name="WestClearingTree" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(419, 568, 451, 559, 478, 585, 489, 626, 478, 682, 446, 700, 413, 682, 394, 645, 402, 600)
+
+[node name="SouthPines" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(520, 788, 546, 747, 564, 711, 589, 751, 599, 811, 631, 766, 649, 791, 672, 846, 647, 866, 611, 855, 575, 864, 538, 850)
+
+[node name="BankPine" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(1101, 292, 1120, 285, 1153, 327, 1156, 377, 1131, 396, 1097, 377, 1087, 341)
+
+[node name="LowerBankTree" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(1071, 598, 1093, 567, 1119, 597, 1126, 647, 1105, 688, 1066, 710, 1035, 694, 1035, 675, 1064, 659)
+
+[node name="RockNearShrine" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(639, 281, 651, 264, 678, 267, 691, 290, 680, 306, 647, 307, 633, 297)
+
+[node name="RuinPathRock" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(365, 460, 384, 453, 406, 466, 407, 482, 382, 491, 358, 479)
+
+[node name="WestMeadowRock" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(326, 609, 354, 601, 374, 618, 381, 647, 359, 657, 326, 647, 317, 631)
+
+[node name="CrossroadsRock" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(925, 553, 943, 539, 964, 551, 968, 573, 946, 582, 923, 573)
+
+[node name="MeadowPine" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(650, 548, 671, 530, 690, 557, 702, 594, 689, 614, 658, 618, 638, 601)
+
+[node name="SouthGateLeft" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(686, 884, 722, 882, 724, 941, 694, 950)
+
+[node name="SouthGateRight" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(813, 884, 847, 881, 851, 940, 817, 949)
+
+[node name="SouthBoundary" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(0, 1008, 1536, 1008, 1536, 1056, 0, 1056)
+
+[node name="NorthBoundary" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(0, -32, 1536, -32, 1536, 16, 0, 16)
+
+[node name="LeftBoundary" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(-32, 0, 16, 0, 16, 1024, -32, 1024)
+
+[node name="RightBoundary" type="CollisionPolygon2D" parent="Obstacles"]
+polygon = PackedVector2Array(1520, 0, 1568, 0, 1568, 1024, 1520, 1024)
+
+[node name="Elf" parent="." instance=ExtResource("3")]
+position = Vector2(780, 310)
+
+[node name="Camera2D" type="Camera2D" parent="Elf"]
+position = Vector2(0, -70)
+zoom = Vector2(2, 2)
+limit_left = 0
+limit_top = 0
+limit_right = 1536
+limit_bottom = 1024
+position_smoothing_enabled = false
+
+[node name="HUD" type="CanvasLayer" parent="."]
+scale = Vector2(2, 2)
+
+[node name="Interface" type="Control" parent="HUD"]
+layout_mode = 0
+offset_right = 640.0
+offset_bottom = 400.0
+mouse_filter = 2
+script = ExtResource("4")
+
+[node name="Location" type="Label" parent="HUD/Interface"]
+offset_left = 28.0
+offset_top = 74.0
+offset_right = 154.0
+offset_bottom = 94.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.95, 0.94, 0.85, 1)
+theme_override_colors/font_shadow_color = Color(0.06, 0.14, 0.11, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 11
+text = "星纹岔路"
