@@ -1,5 +1,11 @@
 # 角色序列帧动画
 
+## 项目需求文档
+
+默认需求来源：[腾讯文档需求表](https://docs.qq.com/sheet/DTHZQbWVySG1aa2Fx?tab=nirmvp&_t=1789908056652&nlc=1)。
+
+后续需求如果没有明确指定参考资料或来源，默认先读取这份在线文档的相关最新内容。项目协作规则见 [AGENTS.md](AGENTS.md)。
+
 在 Godot 4.7 中打开项目，按 **F5** 运行空白地图 `scenes/map.tscn`。
 
 - WASD / 方向键或左下角屏幕按钮：上下左右移动，支持斜向移动。
