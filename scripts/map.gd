@@ -4,6 +4,7 @@ extends Node2D
 @onready var character: Node2D = $Character
 @onready var controls: Node2D = $HUD/Controls
 var buttons: Dictionary = {}
+var returning_to_menu := false
 
 
 func _ready() -> void:
@@ -14,7 +15,39 @@ func _ready() -> void:
 	_add_button("Attack", &"attack", "攻击", true)
 	get_viewport().size_changed.connect(_layout)
 	_layout()
-	character.position = character.movement_bounds.get_center()
+	character.position = character.movement_bounds.position + GameSession.saved_position * character.movement_bounds.size
+	character.sprite.flip_h = GameSession.saved_facing_left
+	GameSession.entering_game = false
+	$HUD/ReturnButton.pressed.connect(_return_to_menu)
+	var autosave := Timer.new()
+	autosave.wait_time = 3.0
+	autosave.timeout.connect(_save_progress)
+	add_child(autosave)
+	autosave.start()
+	_save_progress()
+
+
+func _save_progress() -> void:
+	var bounds: Rect2 = character.movement_bounds
+	var result := GameSession.save_progress((character.position - bounds.position) / bounds.size, character.sprite.flip_h)
+	$HUD/SaveStatus.text = "进度已自动保存" if result == OK else "进度保存失败，请检查本地存储空间"
+
+
+func _return_to_menu() -> void:
+	if returning_to_menu:
+		return
+	returning_to_menu = true
+	_save_progress()
+	var result := get_tree().change_scene_to_file(GameSession.CAMP_SCENE)
+	if result != OK:
+		returning_to_menu = false
+		$HUD/SaveStatus.text = "菜单打开失败，请重试"
+
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		_return_to_menu()
+		get_viewport().set_input_as_handled()
 
 
 func _add_button(button_name: String, action: StringName, caption: String, large := false) -> void:
@@ -42,6 +75,7 @@ func _add_button(button_name: String, action: StringName, caption: String, large
 
 func _layout() -> void:
 	var size := get_viewport_rect().size
+	$HUD/ReturnButton.position = Vector2(size.x - 152, 22)
 	buttons["Up"].position = Vector2(114, size.y - 222)
 	buttons["Left"].position = Vector2(42, size.y - 150)
 	buttons["Down"].position = Vector2(114, size.y - 150)
@@ -61,5 +95,7 @@ func _draw() -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT:
+		if is_node_ready():
+			_save_progress()
 		for action in [&"move_left", &"move_right", &"move_up", &"move_down", &"attack"]:
 			Input.action_release(action)

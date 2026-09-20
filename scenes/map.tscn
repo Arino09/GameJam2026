@@ -22,6 +22,20 @@ text = "空白地图"
 offset_left = 180.0
 offset_top = 30.0
 theme_override_colors/font_color = Color(0.67, 0.74, 0.79, 1)
-text = "WASD / 方向键移动 · 空格攻击 · 支持屏幕按钮"
+text = "WASD / 方向键移动 · 空格攻击"
+
+[node name="ReturnButton" type="Button" parent="HUD"]
+offset_left = 808.0
+offset_top = 22.0
+offset_right = 930.0
+offset_bottom = 60.0
+text = "返回营地"
+
+[node name="SaveStatus" type="Label" parent="HUD"]
+offset_left = 30.0
+offset_top = 58.0
+theme_override_colors/font_color = Color(0.52, 0.63, 0.55, 1)
+theme_override_font_sizes/font_size = 12
+text = "进度已自动保存"
 
 [node name="Controls" type="Node2D" parent="HUD"]
