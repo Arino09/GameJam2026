@@ -30,16 +30,35 @@
 
 ## 地图与角色序列帧动画
 
-新手教程依据「地图写生区」A2:U12（草坪）、A14:U24（山洞）搭建，场景为 `scenes/tutorial_grass.tscn`、`scenes/tutorial_cave.tscn`。WASD / 方向键移动，Shift 奔跑，E 与向导交谈或开箱，空格 / J 攻击新手 Boss，M 查看总览。触屏可拖动左侧移动并点击互动、攻击按钮。地形碰撞、格位对照、占位交互与存档说明见 `docs/tutorial-maps.md`。
+新手教程依据「地图写生区」A2:U12（草坪）、A14:U24（山洞）搭建，场景为 `scenes/tutorial_grass.tscn`、`scenes/tutorial_cave.tscn`。PC 使用 WASD / 方向键移动、Shift 奔跑、E 与向导交谈或开箱、空格 / J 攻击新手 Boss、M 查看总览。手机自动显示摇杆与触控按钮，具体操作见下节。地形碰撞、格位对照、占位交互与存档说明见 `docs/tutorial-maps.md`。
 
 营地点击「出发探索」进入地图 `scenes/forest.tscn`，也可单独打开后按 **F6** 运行。地图「返回营地」保存位置与四方向朝向后回到主界面；Esc 优先关闭地图总览，再次按下返回营地。再次探索或从标题页继续游戏均恢复已保存的位置。
 
 原动画预览 UI、预览场景和旧空白地图场景已删除。
 
+## PC 与移动端操作
+
+当前配置的发布目标为 Web，Godot 编辑器也可直接在桌面运行项目，尚未配置 Android / iOS 安装包。同一个 Web 页面会识别运行设备，自动选择控制方式：PC 保留键鼠；Android、iPhone、iPad 显示触控。iPad 桌面浏览模式也纳入识别，Windows 触屏笔记本仍使用 PC 方式。
+
+- 手机横屏：左下摇杆移动，右下按住「奔跑」加速，可同时使用两个手指。草坪中靠近向导或宝箱后，动作按钮显示「交谈」或「开箱」；山洞中轻点「攻击」，遵守原有攻击距离和冷却。
+- 右上「地图」打开或收起总览；总览期间停止移动和动作，「关闭地图」先回到游戏。正常游玩时可返回标题（教程）或营地（森林）。
+- 登录、营地、设置和弹窗使用轻点操作。松手、触摸取消、失去焦点、旋转屏幕、打开地图或切换场景都会清理触控状态，避免角色持续移动。
+- 设备识别集中在 `scripts/input_profile.gd`；三张地图共用 `scenes/mobile_controls.tscn` 和 `scripts/ui/mobile_controls.gd`，按钮和摇杆直接绘制，无需新增美术或音效资源。
+
 ## 验证与图集重建
+
+### 分辨率适配
+
+- 桌面 / 桌面 Web：统一使用 1280 × 720（16:9）逻辑视口，等比缩放至窗口可用区域，非 16:9 窗口居中留边。支持小窗口和非整数倍缩放。
+- 手机 / 平板（含移动浏览器）：横屏游玩，以 720 逻辑像素高度适配，宽度随设备比例变化。登录、营地与地图共用同一适配入口，不在切换场景时改变缩放规则。
+- 原生移动端使用双向横屏；移动浏览器进入全屏时尝试锁定横屏。不支持方向锁的浏览器在竖屏时提示旋转设备并暂停游戏，回到横屏后继续，旋转会释放触控输入。
+- 桌面调试可附加 `-- --mobile-controls` 模拟移动端，再调整窗口尺寸检查横屏和竖屏。
+- 实现入口为 `scripts/input_profile.gd`。分辨率回归覆盖桌面宽屏、4:3、小窗口、手机长屏、平板以及设备旋转。
 
 ```sh
 godot --headless --path . --editor --import --quit
+godot --headless --fixed-fps 60 --path . --script tools/test_display.gd
+godot --headless --fixed-fps 60 --path . --script tools/test_mobile_controls.gd
 godot --headless --fixed-fps 60 --path . --script tools/test_forest.gd
 godot --headless --fixed-fps 60 --path . --script tools/test_scene_flow.gd
 godot --headless --fixed-fps 60 --path . --script tools/test_tutorial.gd
@@ -50,9 +69,11 @@ godot --headless --fixed-fps 60 --path . --script tools/test_tutorial.gd
 ```sh
 godot --fixed-fps 60 --path . --script tools/test_forest.gd -- --screenshots
 godot --fixed-fps 60 --path . --script tools/test_tutorial.gd -- --screenshots
+godot --fixed-fps 60 --path . --script tools/test_display.gd -- --screenshots
+godot --fixed-fps 60 --path . --script tools/test_mobile_controls.gd -- --screenshots
 ```
 
-截图自动写入 `build/qa/`。已有图集可直接使用；需要从原始生成图重新规整时：
+触控回归使用独立进度文件，覆盖浏览器设备识别、多指移动/奔跑/攻击、触点取消、旋转、菜单轻点以及教程到营地和森林的流程。截图自动写入 `build/qa/`；桌面模拟不能替代手机浏览器真机验证。已有图集可直接使用；需要从原始生成图重新规整时：
 
 ```sh
 python tools/build_elf_v2.py --pipeline <sprite-pipeline 插件的 scripts 目录>

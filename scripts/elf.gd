@@ -7,6 +7,7 @@ extends CharacterBody2D
 var facing := "down"
 var movement_enabled := true
 var touch_direction := Vector2.ZERO
+var touch_running := false
 var walk_phase := 0.0
 const WALK_CYCLE_DISTANCE := 64.0
 const RUN_CYCLE_DISTANCE := 80.0
@@ -24,7 +25,7 @@ func _physics_process(_delta: float) -> void:
 		direction = Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
 		if touch_direction.length_squared() > 0.01:
 			direction = touch_direction.limit_length()
-	var running := Input.is_action_pressed(&"sprint")
+	var running := Input.is_action_pressed(&"sprint") or touch_running
 	velocity = direction * (run_speed if running else move_speed)
 	var previous := position
 	move_and_slide()

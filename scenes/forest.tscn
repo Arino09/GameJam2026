@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/forest.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/maps/moonveil_forest.png" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/elf.tscn" id="3"]
 [ext_resource type="Script" path="res://scripts/forest_hud.gd" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/mobile_controls.tscn" id="5"]
 
 [node name="MoonveilForest" type="Node2D"]
 texture_filter = 1
@@ -166,3 +167,5 @@ offset_right = 510.0
 offset_bottom = 46.0
 mouse_filter = 2
 theme_override_font_sizes/font_size = 12
+
+[node name="MobileControls" parent="." instance=ExtResource("5")]

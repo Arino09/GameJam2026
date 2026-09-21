@@ -164,7 +164,8 @@ func _run() -> void:
 	for point in [Vector2(780, 185), Vector2(780, 1000), Vector2(90, 500), Vector2(1500, 500)]:
 		await _place(point)
 		var center: Vector2 = world.camera.get_screen_center_position()
-		_check(center.x >= 320 and center.x <= 1216 and center.y >= 200 and center.y <= 824, "Camera stays inside map at " + str(point))
+		var half_view: Vector2 = root.get_visible_rect().size / world.camera.zoom / 2.0
+		_check(center.x >= half_view.x and center.x <= world.MAP_SIZE.x - half_view.x and center.y >= half_view.y and center.y <= world.MAP_SIZE.y - half_view.y, "Camera stays inside map at " + str(point))
 	world.reset_player()
 	await _frames(3)
 	await _key(KEY_M)
@@ -179,13 +180,13 @@ func _run() -> void:
 	click.button_index = MOUSE_BUTTON_LEFT
 	click.pressed = true
 	click.position = Vector2(1150, 60)
-	Input.parse_input_event(click)
+	root.push_input(click, true)
 	await _frames(2)
 	_check(world.map_open, "Map button hit test follows 2x HUD scaling")
 	click = InputEventMouseButton.new()
 	click.button_index = MOUSE_BUTTON_LEFT
 	click.pressed = false
-	Input.parse_input_event(click)
+	root.push_input(click, true)
 	world.set_map_open(false)
 	await _walk(["move_down"], 12)
 	_check(elf.position.y > start.y + 15, "Movement resumes after map closes")

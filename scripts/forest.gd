@@ -14,10 +14,11 @@ var motes: Array[Vector3] = []
 @onready var elf: CharacterBody2D = $Elf
 @onready var camera: Camera2D = $Elf/Camera2D
 @onready var hud: Control = $HUD/Interface
+@onready var mobile_controls: Control = $MobileControls/Controls
 
 
 func _ready() -> void:
-	get_window().content_scale_size = Vector2i(1280, 800)
+	InputProfile.use_gameplay_layout()
 	GameSession.entering_game = false
 	elf.position = GameSession.saved_position * MAP_SIZE
 	elf.facing = GameSession.saved_facing
@@ -26,6 +27,10 @@ func _ready() -> void:
 	for index in range(42):
 		motes.append(Vector3(rng.randf_range(200, 1390), rng.randf_range(100, 960), rng.randf_range(0, TAU)))
 	hud.world = self
+	mobile_controls.player = elf
+	mobile_controls.map_requested.connect(func(): set_map_open(not map_open))
+	mobile_controls.return_requested.connect(func(): set_map_open(false) if map_open else return_to_camp())
+	InputProfile.changed.connect(_resize_hud)
 	$HUD/Interface/ReturnToCamp.pressed.connect(return_to_camp)
 	get_viewport().size_changed.connect(_resize_hud)
 	_resize_hud()
@@ -34,6 +39,7 @@ func _ready() -> void:
 
 func _resize_hud() -> void:
 	hud.size = get_viewport_rect().size / 2.0
+	$HUD/Interface/ReturnToCamp.visible = not InputProfile.mobile and not map_open
 
 
 func _process(delta: float) -> void:
@@ -77,18 +83,23 @@ func return_to_camp() -> void:
 	transitioning = true
 	elf.movement_enabled = false
 	hud.cancel_touch()
+	mobile_controls.set_gameplay_enabled(false)
 	if get_tree().change_scene_to_file(GameSession.CAMP_SCENE) != OK:
 		transitioning = false
 		elf.movement_enabled = not map_open
+		mobile_controls.set_gameplay_enabled(not map_open)
 		$HUD/Interface/SaveStatus.text = "暂时无法返回营地，请重试"
 
 
 func set_map_open(value: bool) -> void:
+	if transitioning:
+		return
 	map_open = value
-	$HUD/Interface/ReturnToCamp.visible = not value
+	$HUD/Interface/ReturnToCamp.visible = not value and not InputProfile.mobile
 	elf.movement_enabled = not value
 	elf.touch_direction = Vector2.ZERO
 	hud.cancel_touch()
+	mobile_controls.set_gameplay_enabled(not value)
 
 
 func reset_player() -> void:

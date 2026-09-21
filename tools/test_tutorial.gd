@@ -65,23 +65,30 @@ func _run() -> void:
 	_check(current_scene.get_node("Props/Chest3").position == Vector2(736, 416), "L8 chest matches source")
 	_check(not current_scene.elf.test_move(current_scene.elf.global_transform, Vector2.ZERO), "Grass spawn is clear")
 	await _screenshot("tutorial_grass_gameplay")
+	var profile := root.get_node("InputProfile")
+	profile.set_mobile(true)
+	await _frames()
+	var controls: Control = current_scene.mobile_controls
+	var joystick: Vector2 = controls.joystick_center()
 	var touch := InputEventScreenTouch.new()
 	touch.index = 4
 	touch.pressed = true
-	touch.position = Vector2(200, 400)
-	Input.parse_input_event(touch)
+	touch.position = joystick
+	root.push_input(touch, true)
 	await _frames(2)
 	var drag := InputEventScreenDrag.new()
 	drag.index = 4
-	drag.position = Vector2(264, 400)
-	Input.parse_input_event(drag)
+	drag.position = joystick + Vector2(64, 0)
+	root.push_input(drag, true)
 	await _frames(2)
 	_check(current_scene.elf.touch_direction.x > 0, "Touch drag drives movement")
 	touch.pressed = false
 	touch.position = Vector2(1120, 750) # Release over the HUD button.
-	Input.parse_input_event(touch)
+	root.push_input(touch, true)
 	await _frames(2)
-	_check(current_scene.touch_id == -1 and current_scene.elf.touch_direction == Vector2.ZERO, "Touch release over HUD stops movement")
+	_check(controls.joystick_id == -1 and current_scene.elf.touch_direction == Vector2.ZERO, "Touch release over HUD stops movement")
+	profile.set_mobile(false)
+	await _frames()
 	current_scene.elf.position = Vector2(288, 288)
 	# Walk from E6 to H5 and interact using the real keyboard input handler.
 	await _walk("move_right", 75)

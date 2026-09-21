@@ -65,10 +65,10 @@ func _run() -> void:
 	await _press("%StartButton")
 	_check(current_scene.scene_file_path == session.TUTORIAL_SCENES[0], "Start opens tutorial grass")
 	await _complete_tutorial()
-	_check(root.content_scale_size == Vector2i(960, 680), "Camp restores menu viewport")
+	_check(root.content_scale_size == Vector2i(1280, 720), "Camp keeps the 16:9 viewport")
 	await _press("Navigation/Explore")
 	_check(current_scene.scene_file_path == session.MAP_SCENE, "Explore opens forest")
-	_check(root.content_scale_size == Vector2i(1280, 800), "Forest restores gameplay viewport")
+	_check(root.content_scale_size == Vector2i(1280, 720), "Forest keeps the 16:9 viewport")
 	_check(current_scene.elf.position.is_equal_approx(current_scene.SPAWN), "New game uses forest spawn")
 	current_scene.elf.position = Vector2(780, 380)
 	current_scene.elf.facing = "up"

@@ -17,19 +17,21 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+InputProfile="*res://scripts/input_profile.gd"
 GameSession="*res://scripts/game_session.gd"
 
 [display]
 
 window/size/viewport_width=1280
-window/size/viewport_height=800
+window/size/viewport_height=720
 window/size/window_width_override=1280
-window/size/window_height_override=800
+window/size/window_height_override=720
 window/stretch/mode="viewport"
 window/stretch/aspect="keep"
-window/stretch/scale_mode="integer"
-window/size/min_width=1280
-window/size/min_height=800
+window/stretch/scale_mode="fractional"
+window/size/min_width=320
+window/size/min_height=180
+window/handheld/orientation=4
 
 [gui]
 
@@ -81,7 +83,7 @@ debug_grid={
 [input_devices]
 
 pointing/emulate_touch_from_mouse=false
-pointing/emulate_mouse_from_touch=false
+pointing/emulate_mouse_from_touch=true
 
 [physics]
 

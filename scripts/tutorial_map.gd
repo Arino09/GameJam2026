@@ -10,19 +10,17 @@ const ATTACK_DISTANCE := 120.0
 @onready var props: Node2D = $Props
 @onready var hud: Control = $HUD/Interface
 @onready var exit_area: Area2D = $Exit
+@onready var mobile_controls: Control = $MobileControls/Controls
 var transitioning := false
 var map_open := false
 var save_elapsed := 0.0
 var attack_cooldown := 0.0
 var attack_flash := 0.0
 var message_time := 0.0
-var touch_id := -1
-var touch_origin := Vector2.ZERO
-var touch_end := Vector2.ZERO
 
 
 func _ready() -> void:
-	get_window().content_scale_size = Vector2i(1280, 800)
+	InputProfile.use_gameplay_layout()
 	GameSession.entering_game = false
 	elf.position = $Spawn.position
 	if GameSession.has_save and GameSession.tutorial_stage == map_index:
@@ -37,6 +35,15 @@ func _ready() -> void:
 	hud.get_node("Action").pressed.connect(interact)
 	hud.get_node("Attack").pressed.connect(attack)
 	hud.get_node("Attack").visible = map_index == 1
+	mobile_controls.player = elf
+	mobile_controls.action_mode = "interact" if map_index == 0 else "attack"
+	mobile_controls.return_caption = "返回标题"
+	mobile_controls.interact_requested.connect(interact)
+	mobile_controls.attack_requested.connect(attack)
+	mobile_controls.map_requested.connect(func(): set_map_open(not map_open))
+	mobile_controls.return_requested.connect(func(): set_map_open(false) if map_open else return_to_title())
+	InputProfile.changed.connect(_fit_controls)
+	hud.resized.connect(_fit_controls)
 	if map_index == 0:
 		props.get_node("Guide").activated = GameSession.tutorial_guide_spoken
 		for i in range(3):
@@ -49,7 +56,11 @@ func _ready() -> void:
 	props.get_node("Portal").activated = map_index == 0 or GameSession.tutorial_boss_hits == 3
 	camera.reset_smoothing()
 	_refresh_objective()
-	_show_message("WASD / 方向键移动，Shift 奔跑。靠近物件后按 E 互动。" if map_index == 0 else "靠近石像，按空格 / J 攻击。击败它后，从右侧出口返回营地。", 6.0)
+	_fit_controls()
+	if InputProfile.mobile:
+		_show_message("左侧摇杆移动，按住奔跑加速；靠近物件后轻点右侧互动。" if map_index == 0 else "靠近石像，轻点攻击。击败它后，从右侧出口返回营地。", 6.0)
+	else:
+		_show_message("WASD / 方向键移动，Shift 奔跑。靠近物件后按 E 互动。" if map_index == 0 else "靠近石像，按空格 / J 攻击。击败它后，从右侧出口返回营地。", 6.0)
 
 
 func _process(delta: float) -> void:
@@ -66,14 +77,19 @@ func _process(delta: float) -> void:
 		_save_progress()
 	var target := _nearby_interaction()
 	var action: Button = hud.get_node("Action")
-	action.visible = map_index == 0 and not map_open
+	action.visible = map_index == 0 and not map_open and not InputProfile.mobile
 	action.disabled = target == null or map_open
 	if target != null:
 		action.text = "E  交谈" if target.kind == "guide" else "E  打开宝箱"
 	else:
 		action.text = "E  靠近后互动"
 	hud.get_node("Attack").disabled = map_open or attack_cooldown > 0 or GameSession.tutorial_boss_hits >= 3
-	hud.get_node("Attack").visible = map_index == 1 and not map_open
+	hud.get_node("Attack").visible = map_index == 1 and not map_open and not InputProfile.mobile
+	mobile_controls.action_enabled = target != null if map_index == 0 else not hud.get_node("Attack").disabled
+	mobile_controls.action_caption = ("交谈" if target.kind == "guide" else "开箱") if target != null else ("靠近互动" if map_index == 0 else "攻击")
+	if InputProfile.mobile:
+		hud.get_node("MessagePanel").visible = message_time > 0 and not map_open
+		hud.get_node("Message").visible = message_time > 0 and not map_open
 	queue_redraw()
 
 
@@ -81,7 +97,7 @@ func _physics_process(_delta: float) -> void:
 	if transitioning or map_open or not exit_area.overlaps_body(elf):
 		return
 	if map_index == 1 and GameSession.tutorial_boss_hits < 3:
-		_show_message("出口尚未开启：靠近新手 Boss，按空格 / J 攻击。")
+		_show_message("出口尚未开启：靠近新手 Boss，轻点攻击。" if InputProfile.mobile else "出口尚未开启：靠近新手 Boss，按空格 / J 攻击。")
 		return
 	transitioning = true
 	elf.movement_enabled = false
@@ -98,6 +114,7 @@ func _advance() -> void:
 	if result != OK:
 		transitioning = false
 		elf.movement_enabled = true
+		mobile_controls.set_gameplay_enabled(true)
 		# 离开触发区，避免每一帧重试导致报错刷屏。
 		elf.position.x = exit_area.position.x - 110
 		_show_message("暂时无法切换地图或保存进度，请重试。", 8.0)
@@ -127,7 +144,7 @@ func interact() -> void:
 	if target.kind == "guide":
 		GameSession.tutorial_guide_spoken = true
 		target.activated = true
-		_show_message("向导：下方有三个宝箱，靠近按 E 打开。沿土路向右走，就能进入山洞。", 7.0)
+		_show_message("向导：下方有三个宝箱，靠近后轻点开箱。沿土路向右进入山洞。" if InputProfile.mobile else "向导：下方有三个宝箱，靠近按 E 打开。沿土路向右走，就能进入山洞。", 7.0)
 	else:
 		var index := int(target.get_meta("chest_index"))
 		GameSession.tutorial_chests |= 1 << index
@@ -172,13 +189,13 @@ func _refresh_objective() -> void:
 			if GameSession.tutorial_chests & (1 << i):
 				count += 1
 		if not GameSession.tutorial_guide_spoken:
-			objective = "靠近向导，按 E 交谈  ·  宝箱 %d/3  ·  山洞在右侧 →" % count
+			objective = ("靠近向导，轻点交谈 · 宝箱 %d/3 · 山洞在右侧 →" if InputProfile.mobile else "靠近向导，按 E 交谈  ·  宝箱 %d/3  ·  山洞在右侧 →") % count
 		elif count < 3:
 			objective = "探索路边宝箱 %d/3  ·  沿土路向右进入山洞 →" % count
 		else:
 			objective = "宝箱 3/3  ·  沿土路向右进入山洞 →"
 	else:
-		objective = "靠近新手 Boss，按空格 / J 攻击  ·  %d/3" % GameSession.tutorial_boss_hits
+		objective = ("靠近新手 Boss，轻点攻击 · %d/3" if InputProfile.mobile else "靠近新手 Boss，按空格 / J 攻击  ·  %d/3") % GameSession.tutorial_boss_hits
 		if GameSession.tutorial_boss_hits == 3:
 			objective = "教程完成  ·  从右侧出口返回营地 →"
 	hud.get_node("Objective").text = objective
@@ -206,6 +223,7 @@ func return_to_title() -> void:
 	if get_tree().change_scene_to_file(GameSession.MENU_SCENE) != OK:
 		transitioning = false
 		elf.movement_enabled = not map_open
+		mobile_controls.set_gameplay_enabled(not map_open)
 		_show_message("暂时无法返回标题，请重试。")
 
 
@@ -215,10 +233,13 @@ func set_map_open(value: bool) -> void:
 	map_open = value
 	elf.movement_enabled = not value
 	_cancel_touch()
-	camera.zoom = Vector2(0.75, 0.75) if value else Vector2(2, 2)
+	mobile_controls.set_gameplay_enabled(not value)
+	var overview_zoom := minf(get_viewport_rect().size.x / MAP_SIZE.x, get_viewport_rect().size.y / MAP_SIZE.y) * 0.92
+	camera.zoom = Vector2.ONE * overview_zoom if value else Vector2(2, 2)
 	camera.position = MAP_SIZE / 2 - elf.position if value else Vector2(0, -35)
 	hud.get_node("Overview").text = "M  关闭总览" if value else "M  地图总览"
 	camera.reset_smoothing()
+	_fit_controls()
 
 
 func _unhandled_key_input(event: InputEvent) -> void:
@@ -243,41 +264,55 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	input_viewport.set_input_as_handled()
 
 
-func _unhandled_input(event: InputEvent) -> void:
-	if transitioning or map_open:
-		return
-	if event is InputEventScreenTouch:
-		if event.pressed and event.position.x < 520 and event.position.y > 140 and touch_id < 0:
-			touch_id = event.index
-			touch_origin = event.position
-			touch_end = event.position
-
-
-func _input(event: InputEvent) -> void:
-	# 已开始的拖动始终接收抬手事件，包括手指最后落在 HUD 按钮上。
-	if touch_id < 0:
-		return
-	if event is InputEventScreenTouch and not event.pressed and event.index == touch_id:
-		_cancel_touch()
-	if event is InputEventScreenDrag and event.index == touch_id:
-		touch_end = event.position
-		elf.touch_direction = (touch_end - touch_origin) / 64.0
-
-
 func _cancel_touch() -> void:
-	touch_id = -1
-	elf.touch_direction = Vector2.ZERO
+	mobile_controls.cancel_touch()
+	if transitioning:
+		mobile_controls.set_gameplay_enabled(false)
+
+
+func _place_hud(node_name: String, rect: Rect2, font_size := 0) -> void:
+	var control: Control = hud.get_node(node_name)
+	control.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	control.position = rect.position
+	control.size = rect.size
+	if font_size > 0:
+		control.add_theme_font_size_override("font_size", font_size)
+
+
+func _fit_controls() -> void:
+	if not is_node_ready():
+		return
+	var mobile := InputProfile.mobile
+	var viewport := hud.size
+	hud.get_node("ReturnToTitle").visible = not mobile
+	hud.get_node("Overview").visible = not mobile
+	hud.get_node("Controls").visible = not mobile
+	hud.get_node("Controls").text = "WASD / 方向键 · 移动    Shift · 奔跑    E · 互动    Esc · 标题"
+	hud.get_node("Objective").autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	if mobile:
+		_place_hud("TitlePanel", Rect2(20, 22, viewport.x - 350, 62))
+		_place_hud("Title", Rect2(30, 34, viewport.x - 370, 34), 22)
+		hud.get_node("Title").text = "草坪 · 新手教程" if map_index == 0 else "山洞 · 新手教程"
+		_place_hud("Objective", Rect2(24, 96, viewport.x - 48, 52), 20)
+		_place_hud("MessagePanel", Rect2(20, 156, viewport.x - 40, 72))
+		_place_hud("Message", Rect2(32, 162, viewport.x - 64, 60), 18)
+		_place_hud("SaveStatus", Rect2(24, 234, viewport.x - 48, 32), 18)
+	else:
+		_place_hud("TitlePanel", Rect2(24, 20, 826, 96))
+		_place_hud("Title", Rect2(44, 29, 776, 37), 24)
+		hud.get_node("Title").text = "01  /  新手教程 · 草坪" if map_index == 0 else "02  /  新手教程 · 山洞"
+		_place_hud("Objective", Rect2(44, 74, 786, 29), 19)
+		_place_hud("MessagePanel", Rect2(24, viewport.y - 134, 852, 110))
+		_place_hud("Message", Rect2(44, viewport.y - 127, 810, 59), 19)
+		_place_hud("SaveStatus", Rect2(44, 122, 786, 34), 18)
+		hud.get_node("MessagePanel").show()
+		hud.get_node("Message").show()
+	_refresh_objective()
 
 
 func _draw() -> void:
 	if attack_flash > 0 and not map_open:
 		draw_arc(elf.position + Vector2(0, -25), 64, -PI * 0.8, PI * 0.5, 18, Color("fff0bc"), 5)
-	if touch_id >= 0:
-		var transform := get_canvas_transform().affine_inverse()
-		var origin := transform * touch_origin
-		var end := transform * touch_end
-		draw_circle(origin, 32, Color(0.1, 0.2, 0.2, 0.4))
-		draw_circle(origin + (end - origin).limit_length(25), 10, Color("e3ddbaaa"))
 
 
 func _notification(what: int) -> void:

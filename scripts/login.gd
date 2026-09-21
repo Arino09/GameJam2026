@@ -23,6 +23,7 @@ var changing_scene := false
 
 
 func _ready() -> void:
+	InputProfile.use_menu_layout()
 	%GameTitle.text = game_title
 	GameSession.entering_game = false
 	GameSession.load_progress()
@@ -36,7 +37,7 @@ func _ready() -> void:
 	confirm_button.pressed.connect(_confirm_modal)
 	volume_slider.value_changed.connect(_on_volume_changed)
 	fullscreen_toggle.toggled.connect(_on_fullscreen_toggled)
-	get_window().size_changed.connect(_fit_layout)
+	resized.connect(_fit_layout)
 	_fit_layout()
 	if GameSession.has_save:
 		continue_button.grab_focus()
@@ -50,13 +51,9 @@ func _ready() -> void:
 func _fit_layout() -> void:
 	if changing_scene:
 		return
-	# 为窄屏调整界面视口，保持按钮易于点击。
-	var window := get_window()
-	var target_size := Vector2i(mini(window.size.x, 960), mini(window.size.y, 680))
-	if window.content_scale_size != target_size:
-		window.content_scale_size = target_size
-	var available_width := minf(size.x, target_size.x)
-	var compact := minf(size.y, target_size.y) < 600.0
+	# 视口由 InputProfile 统一管理，这里只调整界面内部排版。
+	var available_width := maxf(size.x, 160.0)
+	var compact := size.y < 600.0
 	%Menu.custom_minimum_size.x = minf(470.0, available_width - 64.0)
 	%GameTitle.add_theme_font_size_override("font_size", 36 if available_width < 560.0 or compact else 60)
 	%GameTitle.custom_minimum_size.y = 60.0 if compact else 85.0
@@ -100,7 +97,6 @@ func _enter_game(resume: bool) -> void:
 	if changing_scene:
 		return
 	changing_scene = true
-	get_window().content_scale_size = Vector2i(960, 680)
 	var result := GameSession.start_game(resume)
 	if result != OK:
 		changing_scene = false
