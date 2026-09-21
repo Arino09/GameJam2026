@@ -18,6 +18,7 @@ var transitioning := false
 
 
 func _ready() -> void:
+	get_window().content_scale_size = Vector2i(960, 680)
 	GameSession.entering_game = false
 	_apply_theme()
 	for button in get_tree().get_nodes_in_group("camp_entry"):

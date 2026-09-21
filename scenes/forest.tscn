@@ -146,3 +146,23 @@ theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 theme_override_font_sizes/font_size = 11
 text = "星纹岔路"
+
+[node name="ReturnToCamp" type="Button" parent="HUD/Interface"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -114.0
+offset_top = 53.0
+offset_right = -16.0
+offset_bottom = 82.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 12
+text = "返回营地"
+
+[node name="SaveStatus" type="Label" parent="HUD/Interface"]
+offset_left = 180.0
+offset_top = 18.0
+offset_right = 510.0
+offset_bottom = 46.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 12

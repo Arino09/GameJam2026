@@ -30,7 +30,7 @@
 
 ## 地图与角色序列帧动画
 
-营地点击「出发探索」进入地图 `scenes/map.tscn`，也可单独打开后按 **F6** 运行。
+营地点击「出发探索」进入地图 `scenes/forest.tscn`，也可单独打开后按 **F6** 运行。地图「返回营地」保存位置与四方向朝向后回到主界面；Esc 优先关闭地图总览，再次按下返回营地。再次探索或从标题页继续游戏均恢复已保存的位置。
 
 原动画预览 UI、预览场景和旧空白地图场景已删除。
 
@@ -39,6 +39,7 @@
 ```sh
 godot --headless --path . --editor --import --quit
 godot --headless --fixed-fps 60 --path . --script tools/test_forest.gd
+godot --headless --fixed-fps 60 --path . --script tools/test_scene_flow.gd
 ```
 
 检查移动方向、斜向速度、奔跑、双向过桥、河岸/建筑/地图边界碰撞以及地图开关。需要实际渲染截图时：

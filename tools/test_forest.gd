@@ -84,6 +84,10 @@ func _record_walk() -> void:
 
 
 func _run() -> void:
+	var session := root.get_node("GameSession")
+	session.progress_path = "res://build/qa/forest_test_progress.cfg"
+	session.saved_position = session.DEFAULT_POSITION
+	session.saved_facing = "down"
 	world = load("res://scenes/forest.tscn").instantiate()
 	root.add_child(world)
 	current_scene = world

@@ -14,7 +14,7 @@
 | 左侧下方 | Backpack | Backpack |
 | 中央主角 | Character/Equipment | Equipment |
 | 左下 | TradingHouse | TradingHouse |
-| 右下 | Explore | 进入现有 map.tscn |
+| 右下 | Explore | 进入现有 forest.tscn |
 
 弹窗内容均位于 `SystemOverlay/Center/Panel/Margin/Stack/PanelContent`。按钮通过 `system` metadata 对应同名内容节点；`title` metadata 控制弹窗标题。每个系统的内容节点单独保留，方便接入后续场景或数据。
 

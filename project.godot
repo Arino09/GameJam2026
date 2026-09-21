@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="月隐林地 · Moonveil"
-run/main_scene="res://scenes/forest.tscn"
+run/main_scene="res://scenes/login.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[autoload]
+
+GameSession="*res://scripts/game_session.gd"
 
 [display]
 

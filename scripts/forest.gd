@@ -8,6 +8,8 @@ const MAP_TEXTURE: Texture2D = preload("res://assets/maps/moonveil_forest.png")
 var map_open := false
 var debug_grid := false
 var elapsed := 0.0
+var save_elapsed := 0.0
+var transitioning := false
 var motes: Array[Vector3] = []
 @onready var elf: CharacterBody2D = $Elf
 @onready var camera: Camera2D = $Elf/Camera2D
@@ -15,11 +17,16 @@ var motes: Array[Vector3] = []
 
 
 func _ready() -> void:
+	get_window().content_scale_size = Vector2i(1280, 800)
+	GameSession.entering_game = false
+	elf.position = GameSession.saved_position * MAP_SIZE
+	elf.facing = GameSession.saved_facing
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 20260920
 	for index in range(42):
 		motes.append(Vector3(rng.randf_range(200, 1390), rng.randf_range(100, 960), rng.randf_range(0, TAU)))
 	hud.world = self
+	$HUD/Interface/ReturnToCamp.pressed.connect(return_to_camp)
 	get_viewport().size_changed.connect(_resize_hud)
 	_resize_hud()
 	camera.reset_smoothing()
@@ -30,6 +37,10 @@ func _resize_hud() -> void:
 
 
 func _process(delta: float) -> void:
+	save_elapsed += delta
+	if save_elapsed >= 3.0 and not transitioning:
+		save_elapsed = 0.0
+		_save_progress()
 	elapsed += delta
 	queue_redraw()
 	hud.queue_redraw()
@@ -44,12 +55,37 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		reset_player()
 	elif event.is_action_pressed(&"debug_grid"):
 		debug_grid = not debug_grid
-	elif event.is_action_pressed(&"ui_cancel") and map_open:
-		set_map_open(false)
+	elif event.is_action_pressed(&"ui_cancel"):
+		get_viewport().set_input_as_handled()
+		if map_open:
+			set_map_open(false)
+		else:
+			return_to_camp()
+
+
+func _save_progress() -> Error:
+	var result := GameSession.save_progress(elf.position / MAP_SIZE, elf.facing)
+	$HUD/Interface/SaveStatus.text = "进度保存失败，请重试" if result != OK else ""
+	return result
+
+
+func return_to_camp() -> void:
+	if transitioning:
+		return
+	if _save_progress() != OK:
+		return
+	transitioning = true
+	elf.movement_enabled = false
+	hud.cancel_touch()
+	if get_tree().change_scene_to_file(GameSession.CAMP_SCENE) != OK:
+		transitioning = false
+		elf.movement_enabled = not map_open
+		$HUD/Interface/SaveStatus.text = "暂时无法返回营地，请重试"
 
 
 func set_map_open(value: bool) -> void:
 	map_open = value
+	$HUD/Interface/ReturnToCamp.visible = not value
 	elf.movement_enabled = not value
 	elf.touch_direction = Vector2.ZERO
 	hud.cancel_touch()
@@ -94,6 +130,7 @@ func _draw() -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and is_instance_valid(elf):
+		_save_progress()
 		for action in [&"move_left", &"move_right", &"move_up", &"move_down", &"sprint"]:
 			Input.action_release(action)
 		elf.touch_direction = Vector2.ZERO
