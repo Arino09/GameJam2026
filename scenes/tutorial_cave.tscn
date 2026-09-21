@@ -1,0 +1,77 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/tutorial_map.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/tutorial_terrain.gd" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/elf.tscn" id="3"]
+[ext_resource type="Script" path="res://scripts/tutorial_prop.gd" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/tutorial_hud.tscn" id="5"]
+
+[sub_resource type="RectangleShape2D" id="ExitShape"]
+size = Vector2(72, 100)
+
+[sub_resource type="RectangleShape2D" id="Feet"]
+size = Vector2(28, 14)
+
+[node name="TutorialCave" type="Node2D"]
+y_sort_enabled = true
+script = ExtResource("1")
+map_index = 1
+
+[node name="Terrain" type="Node2D" parent="."]
+z_index = -10
+script = ExtResource("2")
+cave = true
+rows = PackedStringArray("#####################", "#####################", "sssssssssssssssssssst", "sssssssssssssssssssst", "P..................PP", "P..................PP", "....................t", "sssssssssssssssssssst", "sssssssssssssssssssst", "#####################", "#####################")
+
+[node name="Spawn" type="Marker2D" parent="."]
+position = Vector2(96, 320)
+
+[node name="Props" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Entrance" type="Node2D" parent="Props"]
+position = Vector2(48, 352)
+script = ExtResource("4")
+kind = "portal"
+caption = "山洞入口"
+
+[node name="Boss" type="Node2D" parent="Props"]
+position = Vector2(928, 320)
+script = ExtResource("4")
+kind = "boss"
+caption = "新手 Boss"
+
+[node name="Body" type="StaticBody2D" parent="Props/Boss"]
+
+[node name="Shape" type="CollisionShape2D" parent="Props/Boss/Body"]
+position = Vector2(0, -5)
+shape = SubResource("Feet")
+
+[node name="Portal" type="Node2D" parent="Props"]
+position = Vector2(1280, 352)
+script = ExtResource("4")
+kind = "portal"
+caption = "返回营地"
+
+[node name="Elf" parent="." instance=ExtResource("3")]
+position = Vector2(96, 320)
+
+[node name="Camera2D" type="Camera2D" parent="Elf"]
+position = Vector2(0, -35)
+zoom = Vector2(2, 2)
+limit_left = 0
+limit_top = 0
+limit_right = 1344
+limit_bottom = 704
+
+[node name="Exit" type="Area2D" parent="."]
+position = Vector2(1280, 320)
+collision_layer = 0
+collision_mask = 2
+
+[node name="Shape" type="CollisionShape2D" parent="Exit"]
+shape = SubResource("ExitShape")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Interface" parent="HUD" instance=ExtResource("5")]

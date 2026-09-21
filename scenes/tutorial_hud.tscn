@@ -1,0 +1,134 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Theme" path="res://assets/ui/login_theme.tres" id="1"]
+
+[sub_resource type="StyleBoxFlat" id="Panel"]
+bg_color = Color(0.08, 0.16, 0.15, 0.94)
+border_width_left = 3
+border_color = Color(0.84, 0.74, 0.49, 1)
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+
+[node name="Interface" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("1")
+
+[node name="TitlePanel" type="Panel" parent="."]
+offset_left = 24.0
+offset_top = 20.0
+offset_right = 850.0
+offset_bottom = 116.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("Panel")
+
+[node name="Title" type="Label" parent="."]
+offset_left = 44.0
+offset_top = 29.0
+offset_right = 820.0
+offset_bottom = 66.0
+theme_override_colors/font_color = Color(0.97, 0.93, 0.8, 1)
+theme_override_font_sizes/font_size = 24
+text = "新手教程"
+
+[node name="Objective" type="Label" parent="."]
+offset_left = 44.0
+offset_top = 74.0
+offset_right = 830.0
+offset_bottom = 103.0
+theme_override_colors/font_color = Color(0.81, 0.86, 0.76, 1)
+theme_override_font_sizes/font_size = 19
+
+[node name="ReturnToTitle" type="Button" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -220.0
+offset_top = 20.0
+offset_right = -24.0
+offset_bottom = 64.0
+focus_mode = 0
+theme_override_font_sizes/font_size = 18
+text = "保存并返回标题"
+
+[node name="Overview" type="Button" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -220.0
+offset_top = 73.0
+offset_right = -24.0
+offset_bottom = 116.0
+focus_mode = 0
+theme_override_font_sizes/font_size = 18
+text = "M  地图总览"
+
+[node name="MessagePanel" type="Panel" parent="."]
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -134.0
+offset_right = 876.0
+offset_bottom = -24.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("Panel")
+
+[node name="Message" type="Label" parent="."]
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 44.0
+offset_top = -127.0
+offset_right = 854.0
+offset_bottom = -68.0
+theme_override_colors/font_color = Color(0.97, 0.93, 0.8, 1)
+theme_override_font_sizes/font_size = 19
+autowrap_mode = 2
+vertical_alignment = 1
+
+[node name="Controls" type="Label" parent="."]
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 44.0
+offset_top = -59.0
+offset_right = 854.0
+offset_bottom = -29.0
+theme_override_colors/font_color = Color(0.73, 0.8, 0.71, 1)
+theme_override_font_sizes/font_size = 16
+text = "WASD / 方向键 · 移动    Shift · 奔跑    触屏 · 拖动左侧    Esc · 标题"
+
+[node name="Action" type="Button" parent="."]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -330.0
+offset_top = -82.0
+offset_right = -24.0
+offset_bottom = -24.0
+focus_mode = 0
+theme_override_font_sizes/font_size = 20
+text = "E  靠近后互动"
+
+[node name="Attack" type="Button" parent="."]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -330.0
+offset_top = -151.0
+offset_right = -24.0
+offset_bottom = -93.0
+focus_mode = 0
+theme_override_font_sizes/font_size = 20
+text = "空格 / J  攻击"
+
+[node name="SaveStatus" type="Label" parent="."]
+offset_left = 44.0
+offset_top = 122.0
+offset_right = 830.0
+offset_bottom = 156.0
+theme_override_colors/font_color = Color(1, 0.68, 0.51, 1)
+theme_override_font_sizes/font_size = 18

@@ -39,6 +39,19 @@ func _escape() -> void:
 	await _settle()
 
 
+func _complete_tutorial() -> void:
+	current_scene.elf.position = current_scene.get_node("Exit").position
+	await _settle()
+	_check(current_scene.scene_file_path == session.TUTORIAL_SCENES[1], "Grass exit enters cave")
+	current_scene.elf.position = current_scene.get_node("Props/Boss").position - Vector2(70, 0)
+	for i in range(3):
+		current_scene.attack_cooldown = 0.0
+		current_scene.attack()
+	current_scene.elf.position = current_scene.get_node("Exit").position
+	await _settle()
+	_check(current_scene.scene_file_path == session.CAMP_SCENE, "Tutorial exit opens main menu")
+
+
 func _run() -> void:
 	session = root.get_node("GameSession")
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://build/qa"))
@@ -50,7 +63,8 @@ func _run() -> void:
 	_check(current_scene.scene_file_path == session.MENU_SCENE, "Project starts at login")
 	_check(current_scene.get_node("%ContinueButton").disabled, "No save disables Continue")
 	await _press("%StartButton")
-	_check(current_scene.scene_file_path == session.CAMP_SCENE, "Start opens main menu")
+	_check(current_scene.scene_file_path == session.TUTORIAL_SCENES[0], "Start opens tutorial grass")
+	await _complete_tutorial()
 	_check(root.content_scale_size == Vector2i(960, 680), "Camp restores menu viewport")
 	await _press("Navigation/Explore")
 	_check(current_scene.scene_file_path == session.MAP_SCENE, "Explore opens forest")
@@ -81,6 +95,9 @@ func _run() -> void:
 	_check(current_scene.scene_file_path == session.MENU_SCENE and not current_scene.get_node("%Modal").visible, "Cancel preserves current progress")
 	await _press("%StartButton")
 	await _press("%ConfirmButton")
+	_check(current_scene.scene_file_path == session.TUTORIAL_SCENES[0] and session.tutorial_stage == 0, "Confirmed new game restarts tutorial")
+	_check(session.tutorial_chests == 0 and session.tutorial_boss_hits == 0 and not session.tutorial_guide_spoken, "New game clears tutorial interactions")
+	await _complete_tutorial()
 	await _press("Navigation/Explore")
 	_check(current_scene.elf.position.is_equal_approx(current_scene.SPAWN) and current_scene.elf.facing == "down", "Confirmed new game resets position and facing")
 	await _press("HUD/Interface/ReturnToCamp")
