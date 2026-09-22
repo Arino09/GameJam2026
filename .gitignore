@@ -22,3 +22,7 @@ mono_crash.*.json
 
 # Generated Web builds
 /build/
+
+# Editor/IDE local settings
+/.vscode/
+/.idea/
