@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{FC36FA90-835E-4965-835D-FED40627429D}" SchemaVersion="133">
+	<Events>
+		<WorkUnit Name="Default Work Unit" ID="{FC36FA90-835E-4965-835D-FED40627429D}" PersistMode="Standalone">
+			<ChildrenList>
+				<Event Name="Play_Test" ID="{80F7C272-80E6-4A8E-872E-24A5931481B2}">
+					<ChildrenList>
+						<Action Name="" ID="{525BA1CA-26C3-4EE9-A04F-060740F7F049}" ShortID="167726457">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Armor_Cast_20" ID="{6961B989-F73E-4754-8D67-3CD25475F268}" WorkUnitID="{A706091B-DAD2-4BEA-BE6E-9170AA6F125E}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+			</ChildrenList>
+		</WorkUnit>
+	</Events>
+</WwiseDocument>

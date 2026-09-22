@@ -11,6 +11,7 @@ var elapsed := 0.0
 var save_elapsed := 0.0
 var transitioning := false
 var motes: Array[Vector3] = []
+var _last_location := ""
 @onready var elf: CharacterBody2D = $Elf
 @onready var camera: Camera2D = $Elf/Camera2D
 @onready var hud: Control = $HUD/Interface
@@ -35,6 +36,7 @@ func _ready() -> void:
 	get_viewport().size_changed.connect(_resize_hud)
 	_resize_hud()
 	camera.reset_smoothing()
+	_last_location = location_name()
 
 
 func _resize_hud() -> void:
@@ -50,7 +52,12 @@ func _process(delta: float) -> void:
 	elapsed += delta
 	queue_redraw()
 	hud.queue_redraw()
-	$HUD/Interface/Location.text = location_name()
+	var current_location := location_name()
+	if current_location != _last_location:
+		WwiseManager.stop(_location_audio_key(_last_location), self)
+		_last_location = current_location
+		WwiseManager.play(_location_audio_key(current_location), self)
+	$HUD/Interface/Location.text = current_location
 	$HUD/Interface/Location.visible = not map_open
 
 
@@ -94,7 +101,10 @@ func return_to_camp() -> void:
 func set_map_open(value: bool) -> void:
 	if transitioning:
 		return
+	if map_open == value:
+		return
 	map_open = value
+	WwiseManager.play("map_open" if value else "map_close", self)
 	$HUD/Interface/ReturnToCamp.visible = not value and not InputProfile.mobile
 	elf.movement_enabled = not value
 	elf.touch_direction = Vector2.ZERO
@@ -121,6 +131,15 @@ func location_name() -> String:
 	if elf.position.y > 735:
 		return "南境林径"
 	return "星纹岔路"
+
+
+func _location_audio_key(location: String) -> String:
+	match location:
+		"溪光木桥": return "region_bridge"
+		"旧日回廊": return "region_corridor"
+		"月门祭坛": return "region_altar"
+		"南境林径": return "region_south"
+		_: return "region_crossroads"
 
 
 func _draw() -> void:

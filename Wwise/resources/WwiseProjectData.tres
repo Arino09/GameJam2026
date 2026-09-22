@@ -1,0 +1,31 @@
+[gd_resource type="WwiseProjectData" format=3 uid="uid://bmr36hbx6l4et"]
+
+[sub_resource type="WwiseTreeObject" id="WwiseTreeObject_dn5s6"]
+path = "\\Busses\\Default Work Unit\\Main Audio Bus"
+type = 2
+name = "Main Audio Bus"
+guid = "{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}"
+id = 2246998526
+
+[sub_resource type="WwiseTreeObject" id="WwiseTreeObject_abdhx"]
+children = [SubResource("WwiseTreeObject_dn5s6")]
+name = "Default Work Unit"
+id = 125608783
+
+[sub_resource type="WwiseTreeObjectEvent" id="WwiseTreeObjectEvent_wbiwk"]
+max_duration = 0.550695
+min_duration = 0.550695
+path = "\\Events\\Default Work Unit\\Play_Test"
+type = 3
+name = "Play_Test"
+guid = "{80F7C272-80E6-4A8E-872E-24A5931481B2}"
+id = 3187507146
+
+[sub_resource type="WwiseTreeObject" id="WwiseTreeObject_n4jq4"]
+children = [SubResource("WwiseTreeObjectEvent_wbiwk")]
+name = "Default Work Unit"
+id = 125608783
+
+[resource]
+bus_root = [SubResource("WwiseTreeObject_abdhx")]
+event_root = [SubResource("WwiseTreeObject_n4jq4")]

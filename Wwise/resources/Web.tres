@@ -1,0 +1,5 @@
+[gd_resource type="WwisePlatformInfo" format=3 uid="uid://ckujht3mtg1q3"]
+
+[resource]
+platform_name = "Web"
+platform_path = "Web"

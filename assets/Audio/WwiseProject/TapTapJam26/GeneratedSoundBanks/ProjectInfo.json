@@ -1,0 +1,57 @@
+{
+ "ProjectInfo": {
+  "Project": {
+   "Name": "TapTapJam26",
+   "GUID": "{DCD40B57-9011-4104-B477-2530207A9524}",
+   "Generator": "2025.1.9.9197"
+  },
+  "CacheRoot": "../.cache",
+  "Platforms": [
+   {
+    "Name": "Android",
+    "GUID": "{483B5167-00DA-47C9-99C1-6EE4E7D63D23}",
+    "BasePlatform": "Android",
+    "BasePlatformGUID": "{A2D401DE-B8B6-4FEB-8142-137C34D507CA}",
+    "Path": "Android"
+   },
+   {
+    "Name": "iOS",
+    "GUID": "{4F96AF96-E5AF-4BBE-ADB7-C705DEFD8382}",
+    "BasePlatform": "iOS",
+    "BasePlatformGUID": "{ECE03DB4-F948-462D-B2BB-A9173012B1F8}",
+    "Path": "iOS"
+   },
+   {
+    "Name": "Mac",
+    "GUID": "{4BA8DC1E-67A8-4BE3-B0C3-EDF890530441}",
+    "BasePlatform": "Mac",
+    "BasePlatformGUID": "{9C6217D5-DD11-4795-87C1-6CE02853C540}",
+    "Path": "Mac"
+   },
+   {
+    "Name": "Web",
+    "GUID": "{45BE5269-F76D-4164-9D8A-22CC015F798F}",
+    "BasePlatform": "Web",
+    "BasePlatformGUID": "{639AD233-23F2-4C0F-9127-79F44C15E1DA}",
+    "Path": "Web"
+   },
+   {
+    "Name": "Windows",
+    "GUID": "{BD2B002B-B7E0-47F4-AEEE-EBA979840A1D}",
+    "BasePlatform": "Windows",
+    "BasePlatformGUID": "{6E0CB257-C6C8-4C5C-8366-2740DFC441EB}",
+    "Path": "Windows"
+   }
+  ],
+  "Languages": [
+   {
+    "Name": "English(US)",
+    "Id": "684519430",
+    "GUID": "{74F3D1D0-B157-4934-A725-8AC186184E42}",
+    "Default": "true",
+    "UseAsStandIn": "true"
+   }
+  ],
+  "FileHash": "{86DE86AF-DFF1-9F91-6060-9A7319C7EFC1}"
+ }
+}

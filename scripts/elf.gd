@@ -9,6 +9,7 @@ var movement_enabled := true
 var touch_direction := Vector2.ZERO
 var touch_running := false
 var walk_phase := 0.0
+var _audio_movement_key := ""
 const WALK_CYCLE_DISTANCE := 64.0
 const RUN_CYCLE_DISTANCE := 80.0
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
@@ -17,6 +18,12 @@ const RUN_CYCLE_DISTANCE := 80.0
 func _ready() -> void:
 	# Phase is advanced by actual travel, not a second independent animation clock.
 	sprite.pause()
+
+
+func _exit_tree() -> void:
+	if not _audio_movement_key.is_empty():
+		WwiseManager.stop([_audio_movement_key + "_" + WwiseManager.get_scene_key(), _audio_movement_key], self)
+		_audio_movement_key = ""
 
 
 func _physics_process(_delta: float) -> void:
@@ -39,6 +46,13 @@ func _physics_process(_delta: float) -> void:
 			facing = "down" if direction.y > 0.0 else "up"
 	var travel := position.distance_to(previous)
 	var moving := travel > 0.001
+	var movement_key := "run" if moving and running else ("walk" if moving else "")
+	if movement_key != _audio_movement_key:
+		if not _audio_movement_key.is_empty():
+			WwiseManager.stop([_audio_movement_key + "_" + WwiseManager.get_scene_key(), _audio_movement_key], self)
+		_audio_movement_key = movement_key
+		if not movement_key.is_empty():
+			WwiseManager.play([movement_key + "_" + WwiseManager.get_scene_key(), movement_key], self)
 	if moving:
 		walk_phase = fposmod(walk_phase + travel / (RUN_CYCLE_DISTANCE if running else WALK_CYCLE_DISTANCE), 1.0)
 	var animation := StringName(("walk_" if moving else "idle_") + facing)
