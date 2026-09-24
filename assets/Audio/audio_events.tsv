@@ -1,26 +1,26 @@
 ﻿key	event	stop_event	note
-test_play	Play_Test		测试专用；F9 热键和 tools/wwise_play_test.gd 冒烟测试都用它，是表里唯一真实存在的事件。
-scene_login			登录页背景音乐，进入该场景时触发，离开/切走场景时自动停止。
-scene_camp			营地主菜单背景音乐。
-scene_tutorial_grass			教程草地地图背景音乐。
-scene_tutorial_cave			教程山洞地图背景音乐。
-scene_forest			森林探索地图背景音乐。
-ui_button			所有按钮的默认点击反馈音。单独按钮想要专属音效时新增一行 ui_button_<节点名>，例如登录页开始按钮用 ui_button_StartButton，营地探索按钮用 ui_button_Explore，无需改代码。
-interact_guide			教程草地，和向导对话成功时触发。
-interact_chest			教程草地，打开宝箱成功时触发。
-interact			互动成功的通用兜底音；新增互动类道具（kind）又不想单独配音时留空即可，配音时新增 interact_<kind> 行覆盖。
-hit_boss			教程山洞，每次有效命中新手 Boss 时触发。
-hit			命中结果的通用兜底音；新增可攻击的 kind 时新增 hit_<kind> 行覆盖。
-defeat_boss			教程山洞，新手 Boss 被击败的瞬间触发。
-enter_portal			教程地图，角色进入传送门/出口的瞬间触发。
-walk			角色行走的通用兜底音；需要按场景区分脚步声时新增 walk_<场景键> 行，例如 walk_forest，场景键取自 WwiseManager 的场景语义键。
-run			角色奔跑的通用兜底音；按场景区分时新增 run_<场景键> 行，例如 run_forest。
-modal_open			登录页弹窗（设置/退出/新游戏/错误提示）打开时触发。
-modal_close			登录页弹窗关闭时触发。
-map_open			教程地图或森林地图的总览界面打开时触发。
-map_close			教程地图或森林地图的总览界面关闭时触发。
-region_bridge			森林场景，角色进入"溪光木桥"坐标区域时触发；切换区域前会先停止上一个区域的声音。
-region_corridor			森林场景，角色进入"旧日回廊"坐标区域时触发。
-region_altar			森林场景，角色进入"月门祭坛"坐标区域时触发。
-region_south			森林场景，角色进入"南境林径"坐标区域时触发。
-region_crossroads			森林场景，角色进入"星纹岔路"坐标区域（其余坐标的默认兜底区域）时触发。
+test_play	Play_Test_Attack		测试专用；F9 热键和 tools/wwise_play_test.gd 冒烟测试都用它。
+scene_login	Play_Test_Music		登录页背景音乐；当前用占位循环素材（源文件名标注 DONTUSEITINGAME），进入该场景时触发，离开/切走场景时自动停止，正式音乐做好后直接替换 event 列。
+scene_camp	Play_Test_Music		营地主菜单背景音乐，占位素材同上。
+scene_tutorial_grass	Play_Test_Music		教程草地地图背景音乐，占位素材同上。
+scene_tutorial_cave	Play_Test_Music		教程山洞地图背景音乐，占位素材同上。
+scene_forest	Play_Test_Music		森林探索地图背景音乐，占位素材同上。
+ui_button	Play_Test_Button		所有按钮的默认点击反馈音。单独按钮想要专属音效时新增一行 ui_button_<节点名>，例如登录页开始按钮用 ui_button_StartButton，营地探索按钮用 ui_button_Explore，无需改代码。
+modal_open	Play_Test_Button		登录页弹窗（设置/退出/新游戏/错误提示）打开时触发，暂时复用按钮音。
+modal_close	Play_Test_Button		登录页弹窗关闭时触发，暂时复用按钮音。
+map_open	Play_Test_Button		教程地图或森林地图的总览界面打开时触发，暂时复用按钮音。
+map_close	Play_Test_Button		教程地图或森林地图的总览界面关闭时触发，暂时复用按钮音。
+interact_guide	Play_Interact		教程草地，和向导对话成功时触发。
+interact_chest	Play_Test_Award		教程草地，打开宝箱成功时触发。
+interact	Play_Test_Award		互动成功的通用兜底音；新增互动类道具（kind）又不想单独配音时留空即可，配音时新增 interact_<kind> 行覆盖。
+hit_boss	Play_Test_Attack		教程山洞，每次有效命中新手 Boss 时触发。
+hit	Play_Test_Attack		命中结果的通用兜底音；新增可攻击的 kind 时新增 hit_<kind> 行覆盖。
+defeat_boss	Play_Test_Award		教程山洞，新手 Boss 被击败的瞬间触发。
+enter_portal	Play_Test_Award		教程地图，角色进入传送门/出口的瞬间触发。
+walk			角色行走的通用兜底音；暂无脚步素材，留空不响。需要时新增 walk_<场景键> 行覆盖，场景键取自 WwiseManager 的场景语义键。
+run			角色奔跑的通用兜底音；暂无脚步素材，留空不响。需要时新增 run_<场景键> 行覆盖。
+region_bridge			森林场景，角色进入溪光木桥坐标区域时触发；暂无环境音素材，留空不响。切换区域前会先停止上一个区域的声音。
+region_corridor			森林场景，角色进入旧日回廊坐标区域时触发；暂无环境音素材。
+region_altar			森林场景，角色进入月门祭坛坐标区域时触发；暂无环境音素材。
+region_south			森林场景，角色进入南境林径坐标区域时触发；暂无环境音素材。
+region_crossroads			森林场景，角色进入星纹岔路坐标区域（其余坐标的默认兜底区域）时触发；暂无环境音素材。

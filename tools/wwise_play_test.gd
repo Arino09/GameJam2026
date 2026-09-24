@@ -95,9 +95,15 @@ func _run_child() -> void:
 	var end_of_event := _has_end_of_event()
 	var status: Dictionary = manager.call("get_status")
 	var wwise_events: Dictionary = status.get("wwise_events", {})
+	# Don't hardcode the event name here: the TSV's test_play row is free to
+	# point at whatever real event exists in the Wwise project (it has been
+	# renamed before). This test only ever posts one event, so any loaded
+	# entry proves the auto-defined bank for that event decoded.
 	var auto_bank_loaded := false
-	if wwise_events.has("Play_Test"):
-		auto_bank_loaded = bool(wwise_events["Play_Test"].get("is_auto_bank_loaded", false))
+	for entry in wwise_events.values():
+		if entry is Dictionary and bool(entry.get("is_auto_bank_loaded", false)):
+			auto_bank_loaded = true
+			break
 
 	var result := posted and auto_bank_loaded and duration_ms > 0.0 and end_of_event
 

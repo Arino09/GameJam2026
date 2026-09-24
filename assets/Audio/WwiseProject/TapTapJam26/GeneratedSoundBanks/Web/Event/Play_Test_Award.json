@@ -1,0 +1,48 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Web",
+  "BasePlatform": "Web",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "172",
+  "SoundBanks": [
+   {
+    "Id": "4256328520",
+    "Type": "Event",
+    "GUID": "{25C25B15-4055-41D0-9BB0-A4B7FE9E4D2E}",
+    "Language": "SFX",
+    "Hash": "{0BB7A905-08BD-E362-CE29-934C44D3176D}",
+    "ObjectPath": "Play_Test_Award",
+    "ShortName": "Play_Test_Award",
+    "Path": "Event/Play_Test_Award.bnk",
+    "Media": [
+     {
+      "Id": "787459376",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Tap.wav",
+      "Path": "Media/787459376.wem",
+      "CachePath": "56/{56040A5B-AD98-3553-0F51-16C1216A410F}.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "4256328520",
+      "Name": "Play_Test_Award",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Test_Award",
+      "GUID": "{25C25B15-4055-41D0-9BB0-A4B7FE9E4D2E}",
+      "DurationType": "OneShot",
+      "DurationMin": "2.5333333",
+      "DurationMax": "2.5333333",
+      "MediaRefs": [
+       {
+        "Id": "787459376"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{24C19756-5B07-5831-447A-546457A01E22}"
+ }
+}

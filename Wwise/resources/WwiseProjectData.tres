@@ -1,31 +1,75 @@
 [gd_resource type="WwiseProjectData" format=3 uid="uid://bmr36hbx6l4et"]
 
 [sub_resource type="WwiseTreeObject" id="WwiseTreeObject_dn5s6"]
+path = "\\Busses\\Default Work Unit\\Main Audio Bus\\Music"
+type = 2
+name = "Music"
+guid = "{A48A6FA4-7D9F-4BC5-965E-AF3EACDDA24F}"
+id = 3991942870
+
+[sub_resource type="WwiseTreeObject" id="WwiseTreeObject_abdhx"]
 path = "\\Busses\\Default Work Unit\\Main Audio Bus"
+children = [SubResource("WwiseTreeObject_dn5s6")]
 type = 2
 name = "Main Audio Bus"
 guid = "{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}"
 id = 2246998526
 
-[sub_resource type="WwiseTreeObject" id="WwiseTreeObject_abdhx"]
-children = [SubResource("WwiseTreeObject_dn5s6")]
+[sub_resource type="WwiseTreeObject" id="WwiseTreeObject_wbiwk"]
+children = [SubResource("WwiseTreeObject_abdhx")]
 name = "Default Work Unit"
 id = 125608783
 
-[sub_resource type="WwiseTreeObjectEvent" id="WwiseTreeObjectEvent_wbiwk"]
+[sub_resource type="WwiseTreeObjectEvent" id="WwiseTreeObjectEvent_n4jq4"]
+max_duration = 1.458322
+min_duration = 1.458322
+path = "\\Events\\Default Work Unit\\Play_Interact"
+type = 3
+name = "Play_Interact"
+guid = "{8A66B793-A996-4AD9-9299-E10F35325A8D}"
+id = 3621663528
+
+[sub_resource type="WwiseTreeObjectEvent" id="WwiseTreeObjectEvent_2b7v5"]
 max_duration = 0.550695
 min_duration = 0.550695
-path = "\\Events\\Default Work Unit\\Play_Test"
+path = "\\Events\\Default Work Unit\\Play_Test_Attack"
 type = 3
-name = "Play_Test"
+name = "Play_Test_Attack"
 guid = "{80F7C272-80E6-4A8E-872E-24A5931481B2}"
-id = 3187507146
+id = 2908305289
 
-[sub_resource type="WwiseTreeObject" id="WwiseTreeObject_n4jq4"]
-children = [SubResource("WwiseTreeObjectEvent_wbiwk")]
+[sub_resource type="WwiseTreeObjectEvent" id="WwiseTreeObjectEvent_yty4k"]
+max_duration = 2.5333333
+min_duration = 2.5333333
+path = "\\Events\\Default Work Unit\\Play_Test_Award"
+type = 3
+name = "Play_Test_Award"
+guid = "{25C25B15-4055-41D0-9BB0-A4B7FE9E4D2E}"
+id = 4256328520
+
+[sub_resource type="WwiseTreeObjectEvent" id="WwiseTreeObjectEvent_rq3ka"]
+max_duration = 0.37498868
+min_duration = 0.37498868
+path = "\\Events\\Default Work Unit\\Play_Test_Button"
+type = 3
+name = "Play_Test_Button"
+guid = "{EFC46DC9-D37B-4213-9C22-8DC1C8B826F0}"
+id = 829639417
+
+[sub_resource type="WwiseTreeObjectEvent" id="WwiseTreeObjectEvent_tfk2a"]
+max_duration = 0.0
+min_duration = 0.0
+path = "\\Events\\Default Work Unit\\Play_Test_Music"
+type = 3
+name = "Play_Test_Music"
+guid = "{A56FFE92-BE72-4834-896E-579477E303A3}"
+id = 636537050
+
+[sub_resource type="WwiseTreeObject" id="WwiseTreeObject_e6o1r"]
+children = [SubResource("WwiseTreeObjectEvent_n4jq4"), SubResource("WwiseTreeObjectEvent_2b7v5"), SubResource("WwiseTreeObjectEvent_yty4k"), SubResource("WwiseTreeObjectEvent_rq3ka"), SubResource("WwiseTreeObjectEvent_tfk2a")]
 name = "Default Work Unit"
 id = 125608783
 
 [resource]
-bus_root = [SubResource("WwiseTreeObject_abdhx")]
-event_root = [SubResource("WwiseTreeObject_n4jq4")]
+bus_root = [SubResource("WwiseTreeObject_wbiwk")]
+event_root = [SubResource("WwiseTreeObject_e6o1r")]

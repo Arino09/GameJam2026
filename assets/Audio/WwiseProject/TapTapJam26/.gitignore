@@ -8,3 +8,6 @@
 *.wsettings
 AkWwiseProjectData.asset
 IncrementalSoundBankData.xml
+
+# Godot import sidecars (Wwise sources are not Godot assets)
+*.import

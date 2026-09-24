@@ -3,12 +3,56 @@
 	<Events>
 		<WorkUnit Name="Default Work Unit" ID="{FC36FA90-835E-4965-835D-FED40627429D}" PersistMode="Standalone">
 			<ChildrenList>
-				<Event Name="Play_Test" ID="{80F7C272-80E6-4A8E-872E-24A5931481B2}">
+				<Event Name="Play_Test_Attack" ID="{80F7C272-80E6-4A8E-872E-24A5931481B2}">
 					<ChildrenList>
 						<Action Name="" ID="{525BA1CA-26C3-4EE9-A04F-060740F7F049}" ShortID="167726457">
 							<ReferenceList>
 								<Reference Name="Target">
-									<ObjectRef Name="Armor_Cast_20" ID="{6961B989-F73E-4754-8D67-3CD25475F268}" WorkUnitID="{A706091B-DAD2-4BEA-BE6E-9170AA6F125E}"/>
+									<ObjectRef Name="Attack" ID="{6961B989-F73E-4754-8D67-3CD25475F268}" WorkUnitID="{A706091B-DAD2-4BEA-BE6E-9170AA6F125E}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Test_Award" ID="{25C25B15-4055-41D0-9BB0-A4B7FE9E4D2E}">
+					<ChildrenList>
+						<Action Name="" ID="{2BBDF2BE-A041-4CC1-8645-38986D6C9BBC}" ShortID="1019481486">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Award" ID="{79737D64-C009-4B3A-B120-896C322F9E9A}" WorkUnitID="{A706091B-DAD2-4BEA-BE6E-9170AA6F125E}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Test_Button" ID="{EFC46DC9-D37B-4213-9C22-8DC1C8B826F0}">
+					<ChildrenList>
+						<Action Name="" ID="{246AB977-5634-4FF1-BC0A-2CCD7D4161C2}" ShortID="98818024">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Button" ID="{E8CE55CB-59C7-4374-B261-BDF844FFA691}" WorkUnitID="{A706091B-DAD2-4BEA-BE6E-9170AA6F125E}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Test_Music" ID="{A56FFE92-BE72-4834-896E-579477E303A3}">
+					<ChildrenList>
+						<Action Name="" ID="{AA8999C1-1FC1-4174-836E-FDF3E4F44C61}" ShortID="227807142">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="warm_seamlessloop_DONTUSEITINGAME_WEIXU" ID="{937D46E7-CD78-40CE-9E1D-4155F33F53D8}" WorkUnitID="{A706091B-DAD2-4BEA-BE6E-9170AA6F125E}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Interact" ID="{8A66B793-A996-4AD9-9299-E10F35325A8D}">
+					<ChildrenList>
+						<Action Name="" ID="{3F418D59-2ADD-46C9-B5C8-82C0A9218C87}" ShortID="598115794">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="ESM_Game_Notification_81_Coin_Blip_Select_Tap_Button" ID="{5E37E506-CBDA-4D57-B215-08CB8CC97B23}" WorkUnitID="{A706091B-DAD2-4BEA-BE6E-9170AA6F125E}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>

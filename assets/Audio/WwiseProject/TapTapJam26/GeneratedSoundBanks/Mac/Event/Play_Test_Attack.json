@@ -1,0 +1,48 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "172",
+  "SoundBanks": [
+   {
+    "Id": "2908305289",
+    "Type": "Event",
+    "GUID": "{80F7C272-80E6-4A8E-872E-24A5931481B2}",
+    "Language": "SFX",
+    "Hash": "{EE714610-C73F-9CAD-9E79-E3FAFF33B715}",
+    "ObjectPath": "Play_Test_Attack",
+    "ShortName": "Play_Test_Attack",
+    "Path": "Event/Play_Test_Attack.bnk",
+    "Media": [
+     {
+      "Id": "867510329",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Armor_Cast_20.wav",
+      "Path": "Media/867510329.wem",
+      "CachePath": "FB/{FB01EA02-E2C1-B5D9-C913-EFA3791EA69D}.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "2908305289",
+      "Name": "Play_Test_Attack",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Test_Attack",
+      "GUID": "{80F7C272-80E6-4A8E-872E-24A5931481B2}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.550695",
+      "DurationMax": "0.550695",
+      "MediaRefs": [
+       {
+        "Id": "867510329"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{6A9D66FF-A65B-6447-DE0E-0B5CC06DC150}"
+ }
+}

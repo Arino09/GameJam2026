@@ -15,7 +15,7 @@
 
 不再有 `category`/`trigger_key`/`bank`/`enabled` 列：分类和触发说明写进 `note` 即可；`bank` 恒为 Auto-Defined SoundBank（详见下文），已没有需要单独配置的场景；`enabled` 用清空 `event` 代替关闭一行。
 
-当前表只给 `test_play` 填入真实存在的 `Play_Test`，其余行都保留 `event` 为空作为音频制作填写的接口，避免开发期间误播放测试音。
+当前用 2026-09-22 新做的 4 个占位 Event（`Play_Test_Attack`/`Play_Test_Award`/`Play_Test_Button`/`Play_Test_Music`）填了大部分行，让游戏基本有声音；具体映射和替换方法见下面"占位事件映射（2026-09-22）"。`walk`/`run`/`region_*` 五行仍然留空，因为还没有对应的脚步/环境音素材。
 
 ## 键名和兜底链（fallback）
 
@@ -31,9 +31,27 @@
 - **弹窗** `modal_open`、`modal_close`：登录页设置/退出/新游戏/错误提示等弹窗显示和关闭时触发。
 - **地图总览** `map_open`、`map_close`：教程和森林地图总览状态变化时触发；重复设置同一状态不会重复发声。
 - **森林区域** `region_bridge`、`region_corridor`、`region_altar`、`region_south`、`region_crossroads`：森林已有的五个坐标区域发生切换时触发（桥、回廊、祭坛、南境、岔路）；离开一个区域会先 `stop()` 它，再 `play()` 新区域，避免环境音叠加。只使用现有 `location_name()` 的坐标判定，不猜测贴图材质。
-- **测试** `test_play`：F9 热键和 `tools/wwise_play_test.gd` 冒烟测试共用，对应表里唯一真实存在的事件 `Play_Test`。
+- **测试** `test_play`：F9 热键和 `tools/wwise_play_test.gd` 冒烟测试共用。**这一行的 `event` 必须始终指向 Wwise 工程里真实存在的某个 Event**——它不是固定绑死 `Play_Test` 这个名字；`tools/wwise_play_test.gd` 和 `WwiseManager` 都是动态读表、动态判定的，不会因为改名而失效。2026-09-22 音频同事把原来的 `Play_Test` 事件直接改名成了 `Play_Test_Attack`（GUID 不变，Wwise 侧的 ShortID 随之变化，旧的 `Event/Play_Test.bnk` 不再生成），表已同步改成 `Play_Test_Attack`。以后再改名/换成正式测试音时，同步改这一行即可，不用碰任何脚本。
 
 一个动作如果同时需要 UI 反馈和玩法结果两种声音，分别填两条键对应的行即可；只想要一个声音时清空另一行的 `event`。不要把同一个长循环事件同时填到多个场景/区域行。
+
+### 占位事件映射（2026-09-22）
+
+音频同事这次新做了 4 个 Auto-Defined Event/SoundBank（Windows/Web/Mac/Android/iOS 五个平台目录下都已生成），用于让游戏在正式配音前基本有声音：
+
+| Event | 素材 | 填到了哪些行 |
+| --- | --- | --- |
+| `Play_Test_Attack` | `Armor_Cast_20.wav` | `test_play`、`hit_boss`、`hit` |
+| `Play_Test_Award` | `Tap.wav` | `interact_guide`、`interact_chest`、`interact`、`defeat_boss`、`enter_portal` |
+| `Play_Test_Button` | `Button.wav` | `ui_button`、`modal_open`、`modal_close`、`map_open`、`map_close` |
+| `Play_Test_Music` | `warm_seamlessloop_DONTUSEITINGAME.wav` | `scene_login`、`scene_camp`、`scene_tutorial_grass`、`scene_tutorial_cave`、`scene_forest` |
+
+几个需要注意的点：
+
+- 同一个 Event 被填进多行是有意的：现在只有 4 个可用素材，先按"攻击类/成功类/UI类/音乐类"四个大类广泛铺开，让每个语义键都有声音，而不是只填最核心的几行。正式配音后按需要逐行替换成专属事件即可，`event` 列每行独立，互不影响。
+- `Play_Test_Music` 的源文件名里带 `DONTUSEITINGAME`，明确是占位素材，不能当成最终背景音乐使用；场景音乐这五行是最需要尽快用正式素材替换的。
+- 这 5 个场景音乐行的 `stop_event` 仍然留空——因为 `stop(key)` 没填 `stop_event` 时会直接停止这一行自己的 `event`（见上文），不需要额外配一个 Stop Event，森林区域切场景、登录页切场景等已有的自动停止逻辑不用改。
+- `walk`/`run`/`region_bridge`/`region_corridor`/`region_altar`/`region_south`/`region_crossroads` 这 7 行还是空的：脚步和环境音目前没有对应素材，不属于这批映射范围。
 
 ### 什么情况仍然需要程序员
 
@@ -79,12 +97,12 @@ Wwise 扩展缺失、初始化失败或 Bank 不存在时，桥接器只记录�
 Godot_v4.7.2-stable_win64_console.exe --path . --script tools/wwise_play_test.gd
 ```
 
-这条命令只会在调用方看来启动一个进程，但脚本内部会用 `OS.execute()` 把自己作为子进程再跑一次（带隐藏的 `-- wwise-play-test-child` 标记），这样外层进程才能拿到子进程完整的 stdout/stderr 文本去 grep 那句 `Media ... was not loaded for this source`——脚本没法直接检查自己这个进程的输出。子进程内部通过 `WwiseManager.play_test_with_callback()` 用 `AK_END_OF_EVENT | AK_DURATION` 回调发送 `test_play` 规则对应的 Event（当前表里是 `Play_Test`），并轮询等待最多 5 秒（用真实经过的毫秒数而不是固定帧数，兼顾无音频设备时可能变慢的情况），不使用阻塞式 sleep。
+这条命令只会在调用方看来启动一个进程，但脚本内部会用 `OS.execute()` 把自己作为子进程再跑一次（带隐藏的 `-- wwise-play-test-child` 标记），这样外层进程才能拿到子进程完整的 stdout/stderr 文本去 grep 那句 `Media ... was not loaded for this source`——脚本没法直接检查自己这个进程的输出。子进程内部通过 `WwiseManager.play_test_with_callback()` 用 `AK_END_OF_EVENT | AK_DURATION` 回调发送 `test_play` 规则对应的 Event（当前表里是 `Play_Test_Attack`，见上文"占位事件映射"；这个名字允许以后再改，测试脚本不依赖固定名字），并轮询等待最多 5 秒（用真实经过的毫秒数而不是固定帧数，兼顾无音频设备时可能变慢的情况），不使用阻塞式 sleep。
 
 脚本最终会打印这些行（子进程内部还会先打印一遍前缀相同、不带外层判定的版本）：
 
 - `WWISE_PLAY_TEST_POSTED`：`play_test_with_callback()` 是否成功拿到了有效 Playing ID。
-- `WWISE_PLAY_TEST_AUTO_BANK_LOADED`：对应 `WwiseEvent.is_auto_bank_loaded`，为 `true` 才说明 Auto-Defined Bank 及媒体的异步预加载真正完成了（见上文"Auto-Defined SoundBank 和 WwiseEvent"）。
+- `WWISE_PLAY_TEST_AUTO_BANK_LOADED`：只要 `WwiseManager.get_status()` 的 `wwise_events` 里**任意一个**已缓存的 `WwiseEvent` 报告 `is_auto_bank_loaded=true` 就算 `true`（不再硬编码检查某个固定的 Event 名字——`test_play` 这一行的 `event` 改名过一次，如果按名字查找会永远查不到，之前正是这个问题导致改名后测试假性失败，已修复）。这个测试进程只会 post 一个 Event，所以任意命中即可说明 Auto-Defined Bank 及媒体的异步预加载真正完成了（见上文"Auto-Defined SoundBank 和 WwiseEvent"）。
 - `WWISE_PLAY_TEST_DURATION_MS`：`AK_DURATION` 回调里的 `fDuration`（毫秒）。这是媒体被真正解码过的直接证据——旧 bug 下这个回调根本不会触发，值恒为 `0`。
 - `WWISE_PLAY_TEST_END_OF_EVENT`：是否收到了 `AK_END_OF_EVENT` 回调，即事件是否播放完成。
 - `WWISE_PLAY_TEST_STATUS`：`WwiseManager.get_status()` 的完整内容，包含 `wwise_events` 字段（每个缓存的 `WwiseEvent` 的 `is_auto_bank_loaded`），可用于检查初始化。
@@ -93,7 +111,7 @@ Godot_v4.7.2-stable_win64_console.exe --path . --script tools/wwise_play_test.gd
 
 `WwiseManager.play_test()`（不带回调、给游戏内其它调用方用的版本）语义不变：仍然只是 `_play_rule("test_play", source)`，返回值只代表 `post()` 拿到了有效 Playing ID，不代表媒体真的解码成功——要验证媒体，请用上面的 `wwise_play_test.gd`，或在有音频输出设备的桌面运行中直接听。
 
-实测（2026-09-22，Windows headless 与非 headless 均已验证）：`Play_Test` 的 `fDuration` 稳定为 `550.6875` 毫秒，`is_auto_bank_loaded` 为 `true`，未出现过 `Media ... was not loaded for this source`；headless 模式下 Wwise 的音频渲染管线照常工作，`AK_DURATION` / `AK_END_OF_EVENT` 回调都能正常触发，不需要额外加 `--rendering-driver` 之类的参数。
+实测（2026-09-22，Windows headless 与非 headless 均已验证，先后覆盖了改名前的 `Play_Test` 和改名后的 `Play_Test_Attack`）：`fDuration` 稳定为 `550.6875` 毫秒（`Armor_Cast_20.wav`），`is_auto_bank_loaded` 为 `true`，未出现过 `Media ... was not loaded for this source`；headless 模式下 Wwise 的音频渲染管线照常工作，`AK_DURATION` / `AK_END_OF_EVENT` 回调都能正常触发，不需要额外加 `--rendering-driver` 之类的参数。同批还追加验证了新填的 `ui_button`（`Play_Test_Button`）、`interact_guide`（`Play_Test_Award`）、`hit_boss`（`Play_Test_Attack`）、`scene_forest`（`Play_Test_Music`）四个代表性键，均无 `Media ... was not loaded` 报错；五个场景（`login`/`main_menu`/`tutorial_grass`/`tutorial_cave`/`forest`）headless 实例化也保持无脚本错误。
 
 替换正式事件前，先确认对应平台目录下的 Auto-Defined Bank（`GeneratedSoundBanks/<平台>/Event/<EventName>.bnk`）和其松散媒体文件都存在；本仓库目前已有 Windows、Web、Mac、Android、iOS，未发现 Linux Bank。编辑 `audio_events.tsv` 后重启这次测试或重新运行游戏即可生效，当前桥接器没有热重载表格。
 
@@ -109,7 +127,7 @@ Godot_v4.7.2-stable_win64_console.exe --path . --script tools/wwise_play_test.gd
 
   `platform` / `initialized` 直接来自 `get_status()`；`rules` 是解析出的规则行数（`_rules.size()`）；`table_loaded` 是新增字段（`get_status()` 里也能读到），标记 `assets/Audio/audio_events.tsv` 是否被 `_load_config()` 成功打开并解析完（即使解析出 0 条规则也算 `true`；文件打不开/为空则保持 `false`，同时会看到 `Wwise audio table not found` 或 `Wwise audio table is empty` 诊断）。
 
-- **F9 热键**（`_unhandled_input()`，约第 53 行）：按一次 F9（`KEY_F9`，过滤了 `echo`，不区分焦点在哪个节点，且没有在 `project.godot` 里新增任何 InputMap action）会调用和 `tools/wwise_play_test.gd` 相同的 `play_test_with_callback()`，用 `AK_END_OF_EVENT | AK_DURATION` 回调发送 `test_play` 规则的 Event（当前表里是 `Play_Test`），并打印：
+- **F9 热键**（`_unhandled_input()`，约第 53 行）：按一次 F9（`KEY_F9`，过滤了 `echo`，不区分焦点在哪个节点，且没有在 `project.godot` 里新增任何 InputMap action）会调用和 `tools/wwise_play_test.gd` 相同的 `play_test_with_callback()`，用 `AK_END_OF_EVENT | AK_DURATION` 回调发送 `test_play` 规则的 Event（当前表里是 `Play_Test_Attack`），并打印：
 
   ```text
   WWISE_HOTKEY_TEST posted=<bool>

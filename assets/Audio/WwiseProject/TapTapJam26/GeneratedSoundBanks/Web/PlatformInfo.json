@@ -20,7 +20,7 @@
    "RemoveUnusedGeneratedFiles": "true",
    "SourceControlGeneratedFiles": "false",
    "GenerateHeaderFile": "false",
-   "GenerateContentTxtFile": "true",
+   "GenerateContentTxtFile": "false",
    "GenerateMetadataXML": "false",
    "GenerateMetadataJSON": "true",
    "GenerateAllBanksMetadata": "false",
@@ -33,6 +33,6 @@
    "PrintObjectPath": "true",
    "PrintObjectColor": "true"
   },
-  "FileHash": "{7788823A-9114-BFC0-C306-9341E36A8415}"
+  "FileHash": "{F3F2BA9D-4CB3-8F4B-1613-9C22F4C7D11D}"
  }
 }

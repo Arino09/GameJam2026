@@ -28,6 +28,7 @@ const INITIAL_SCENE_KEYS := {
 var _rules: Dictionary = {}
 var _wwise: Object
 var _initialized := false
+var _owns_lifecycle := false
 var _current_scene_path := ""
 var _current_scene_key := ""
 var _wired_buttons: Dictionary = {}
@@ -35,6 +36,7 @@ var _wwise_events: Dictionary = {}
 var _diagnostics: Array[String] = []
 var _warned: Dictionary = {}
 var _table_loaded := false
+var _listener_registered := false
 
 
 func _ready() -> void:
@@ -44,7 +46,7 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	if _initialized and _has_method("render_audio"):
+	if _initialized and _owns_lifecycle and _has_method("render_audio"):
 		_wwise.call("render_audio")
 	_track_scene()
 
@@ -82,7 +84,7 @@ func _notification(what: int) -> void:
 		if _current_scene_key != "":
 			_play_rule("scene_%s" % _current_scene_key, self)
 	elif what == NOTIFICATION_EXIT_TREE or what == NOTIFICATION_CRASH:
-		if _initialized and _has_method("shutdown"):
+		if _initialized and _owns_lifecycle and _has_method("shutdown"):
 			_wwise.call("shutdown")
 		_initialized = false
 
@@ -186,8 +188,8 @@ func _initialize() -> void:
 	# singleton, failed init, or success) so this line is always present at
 	# startup as a quick cross-platform sanity check; see docs/wwise-audio.md.
 	print(
-		"WWISE_STATUS platform=%s initialized=%s rules=%d table_loaded=%s" % [
-			_platform_name(), _initialized, _rules.size(), _table_loaded,
+		"WWISE_STATUS platform=%s initialized=%s rules=%d table_loaded=%s listener=%s" % [
+			_platform_name(), _initialized, _rules.size(), _table_loaded, _listener_registered,
 		]
 	)
 
@@ -200,18 +202,16 @@ func _do_initialize() -> void:
 	if not _has_method("init") or not _has_method("is_initialized"):
 		_warn_once("bad_singleton", "Wwise singleton is missing the expected runtime API.")
 		return
-	# Set the project-owned path before init so the stock integration can find
-	# Init.bnk during its own startup step. This also avoids relying on an
-	# absolute authoring-machine path in Wwise Project Settings.
-	if _has_method("set_banks_path"):
-		_wwise.call("set_banks_path", _platform_bank_root() + "/")
 	# Guard against AK_AlreadyInitialized: something else (e.g. the stock
-	# Wwise runtime manager, if it is ever wired up as an autoload alongside
-	# this one) may have already called init() before this node ran.
+	# WwiseRuntimeManager autoload) may have already called init() before this
+	# node ran. Only the owner of initialization renders and shuts down Wwise.
 	if bool(_wwise.call("is_initialized")):
-		_warn_once("already_initialized", "Wwise was already initialized before WwiseManager ran; skipping duplicate init() call.")
+		_warn_once("already_initialized", "Wwise was already initialized before WwiseManager ran; reusing the existing lifecycle.")
 	else:
+		if _has_method("set_banks_path"):
+			_wwise.call("set_banks_path", _platform_bank_root() + "/")
 		_wwise.call("init")
+		_owns_lifecycle = true
 	_initialized = bool(_wwise.call("is_initialized"))
 	if not _initialized:
 		_warn_once("init_failed", "Wwise initialization failed; the game will continue without Wwise audio.")
@@ -222,6 +222,14 @@ func _do_initialize() -> void:
 		_wwise.call("set_banks_path", _platform_bank_root() + "/")
 	if _has_method("set_current_language"):
 		_wwise.call("set_current_language", "SFX")
+	# Without a default listener Wwise still accepts events and fires
+	# AK_DURATION / AK_END_OF_EVENT callbacks, but nothing reaches the
+	# speakers. Register this autoload as the single default listener so
+	# every emitter game object is heard.
+	if _has_method("register_listener"):
+		_listener_registered = bool(_wwise.call("register_listener", self))
+	if not _listener_registered:
+		_warn_once("listener_failed", "Wwise default listener registration failed; events will be silent.")
 	# Every row in the audio table uses an Auto-Defined SoundBank, loaded on
 	# demand per Event through WwiseEvent (see _get_wwise_event). Init.bnk is
 	# the only bank loaded explicitly, and Wwise.init() already loaded it
