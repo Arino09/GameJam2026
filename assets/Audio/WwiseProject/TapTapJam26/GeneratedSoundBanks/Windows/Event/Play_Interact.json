@@ -1,0 +1,48 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "172",
+  "SoundBanks": [
+   {
+    "Id": "3621663528",
+    "Type": "Event",
+    "GUID": "{8A66B793-A996-4AD9-9299-E10F35325A8D}",
+    "Language": "SFX",
+    "Hash": "{87585123-F003-124D-82A1-C139B9F9246F}",
+    "ObjectPath": "Play_Interact",
+    "ShortName": "Play_Interact",
+    "Path": "Event/Play_Interact.bnk",
+    "Media": [
+     {
+      "Id": "787299989",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "ESM_Game_Notification_81_Coin_Blip_Select_Tap_Button.wav",
+      "Path": "Media/787299989.wem",
+      "CachePath": "A9/{A9F8E4A5-B67B-0541-1653-96C6B4926307}.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "3621663528",
+      "Name": "Play_Interact",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Interact",
+      "GUID": "{8A66B793-A996-4AD9-9299-E10F35325A8D}",
+      "DurationType": "OneShot",
+      "DurationMin": "1.458322",
+      "DurationMax": "1.458322",
+      "MediaRefs": [
+       {
+        "Id": "787299989"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{36640646-CB8B-A340-5057-16519A534472}"
+ }
+}

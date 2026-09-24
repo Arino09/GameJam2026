@@ -1,0 +1,48 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "172",
+  "SoundBanks": [
+   {
+    "Id": "829639417",
+    "Type": "Event",
+    "GUID": "{EFC46DC9-D37B-4213-9C22-8DC1C8B826F0}",
+    "Language": "SFX",
+    "Hash": "{3E71749E-583E-36E6-5210-9BF8A15D859F}",
+    "ObjectPath": "Play_Test_Button",
+    "ShortName": "Play_Test_Button",
+    "Path": "Event/Play_Test_Button.bnk",
+    "Media": [
+     {
+      "Id": "895242167",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Button.wav",
+      "Path": "Media/895242167.wem",
+      "CachePath": "AE/{AE94CA04-CDD0-E76E-CA04-3A8312A8122A}.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "829639417",
+      "Name": "Play_Test_Button",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Test_Button",
+      "GUID": "{EFC46DC9-D37B-4213-9C22-8DC1C8B826F0}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.37498868",
+      "DurationMax": "0.37498868",
+      "MediaRefs": [
+       {
+        "Id": "895242167"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{0ECFDE53-8758-7CCA-B54F-2D2346FB0C97}"
+ }
+}

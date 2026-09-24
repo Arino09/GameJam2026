@@ -1,10 +1,10 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene format=3 uid="uid://y6n05cy7duqj"]
 
-[ext_resource type="Script" path="res://scripts/login.gd" id="1"]
-[ext_resource type="Texture2D" path="res://assets/ui/login_background.svg" id="2"]
-[ext_resource type="Theme" path="res://assets/ui/login_theme.tres" id="3"]
+[ext_resource type="Script" uid="uid://bxxxu0ukf781p" path="res://scripts/login.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://c72saie5ro3bh" path="res://assets/ui/login_background.svg" id="2"]
+[ext_resource type="Theme" uid="uid://c2uq24b15tndt" path="res://assets/ui/login_theme.tres" id="3"]
 
-[node name="Login" type="Control"]
+[node name="Login" type="Control" unique_id=2125464103]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,7 +14,7 @@ grow_vertical = 2
 theme = ExtResource("3")
 script = ExtResource("1")
 
-[node name="Background" type="TextureRect" parent="."]
+[node name="Background" type="TextureRect" parent="." unique_id=1243501110]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -26,7 +26,7 @@ texture = ExtResource("2")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Margin" type="MarginContainer" parent="."]
+[node name="Margin" type="MarginContainer" parent="." unique_id=237102999]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -38,30 +38,30 @@ theme_override_constants/margin_top = 28
 theme_override_constants/margin_right = 32
 theme_override_constants/margin_bottom = 24
 
-[node name="Center" type="CenterContainer" parent="Margin"]
+[node name="Center" type="CenterContainer" parent="Margin" unique_id=1020462575]
 layout_mode = 2
 
-[node name="Menu" type="VBoxContainer" parent="Margin/Center"]
+[node name="Menu" type="VBoxContainer" parent="Margin/Center" unique_id=1803307969]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(470, 0)
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="Emblem" type="Label" parent="Margin/Center/Menu"]
+[node name="Emblem" type="Label" parent="Margin/Center/Menu" unique_id=1628697913]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.72, 0.66, 0.41, 1)
 theme_override_font_sizes/font_size = 22
 text = "—  ◇  —"
 horizontal_alignment = 1
 
-[node name="Eyebrow" type="Label" parent="Margin/Center/Menu"]
+[node name="Eyebrow" type="Label" parent="Margin/Center/Menu" unique_id=2049187106]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.62, 0.70, 0.56, 1)
+theme_override_colors/font_color = Color(0.62, 0.7, 0.56, 1)
 theme_override_font_sizes/font_size = 15
 text = "搜 寻   ·   战 斗   ·   撤 离"
 horizontal_alignment = 1
 
-[node name="GameTitle" type="Label" parent="Margin/Center/Menu"]
+[node name="GameTitle" type="Label" parent="Margin/Center/Menu" unique_id=912081556]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 85)
 layout_mode = 2
@@ -73,24 +73,24 @@ text = "游戏名称"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Subtitle" type="Label" parent="Margin/Center/Menu"]
+[node name="Subtitle" type="Label" parent="Margin/Center/Menu" unique_id=1263349633]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.62, 0.70, 0.57, 1)
+theme_override_colors/font_color = Color(0.62, 0.7, 0.57, 1)
 theme_override_font_sizes/font_size = 16
 text = "循着微光，开启下一段旅途"
 horizontal_alignment = 1
 
-[node name="Spacer" type="Control" parent="Margin/Center/Menu"]
+[node name="Spacer" type="Control" parent="Margin/Center/Menu" unique_id=921191400]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="Buttons" type="VBoxContainer" parent="Margin/Center/Menu"]
+[node name="Buttons" type="VBoxContainer" parent="Margin/Center/Menu" unique_id=2111466624]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 12
 
-[node name="StartButton" type="Button" parent="Margin/Center/Menu/Buttons"]
+[node name="StartButton" type="Button" parent="Margin/Center/Menu/Buttons" unique_id=1973717199]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(330, 58)
 layout_mode = 2
@@ -98,28 +98,28 @@ mouse_default_cursor_shape = 2
 theme_type_variation = &"PrimaryButton"
 text = "开始游戏"
 
-[node name="ContinueButton" type="Button" parent="Margin/Center/Menu/Buttons"]
+[node name="ContinueButton" type="Button" parent="Margin/Center/Menu/Buttons" unique_id=1223250150]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(330, 56)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 text = "继续游戏"
 
-[node name="SettingsButton" type="Button" parent="Margin/Center/Menu/Buttons"]
+[node name="SettingsButton" type="Button" parent="Margin/Center/Menu/Buttons" unique_id=943831149]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(330, 56)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 text = "设置"
 
-[node name="ExitButton" type="Button" parent="Margin/Center/Menu/Buttons"]
+[node name="ExitButton" type="Button" parent="Margin/Center/Menu/Buttons" unique_id=835503374]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(330, 56)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 text = "退出"
 
-[node name="SaveStatus" type="Label" parent="Margin/Center/Menu"]
+[node name="SaveStatus" type="Label" parent="Margin/Center/Menu" unique_id=1022869803]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
@@ -129,7 +129,7 @@ text = "尚无旅途记录 · 从这里开始"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Footer" type="Label" parent="."]
+[node name="Footer" type="Label" parent="." unique_id=191477986]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -139,13 +139,12 @@ offset_top = -31.0
 offset_bottom = -11.0
 grow_horizontal = 2
 grow_vertical = 0
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.40, 0.51, 0.43, 1)
+theme_override_colors/font_color = Color(0.4, 0.51, 0.43, 1)
 theme_override_font_sizes/font_size = 12
 text = "2026 · 游戏创作     /     每一次出发，都有新的发现"
 horizontal_alignment = 1
 
-[node name="Modal" type="Control" parent="."]
+[node name="Modal" type="Control" parent="." unique_id=427459238]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -155,7 +154,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Dim" type="ColorRect" parent="Modal"]
+[node name="Dim" type="ColorRect" parent="Modal" unique_id=1796575879]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -164,7 +163,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.02, 0.06, 0.04, 0.88)
 
-[node name="Center" type="CenterContainer" parent="Modal"]
+[node name="Center" type="CenterContainer" parent="Modal" unique_id=861991256]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -172,72 +171,71 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ModalPanel" type="PanelContainer" parent="Modal/Center"]
+[node name="ModalPanel" type="PanelContainer" parent="Modal/Center" unique_id=2102454941]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(470, 0)
 layout_mode = 2
 
-[node name="Padding" type="MarginContainer" parent="Modal/Center/ModalPanel"]
+[node name="Padding" type="MarginContainer" parent="Modal/Center/ModalPanel" unique_id=156610916]
 layout_mode = 2
 theme_override_constants/margin_left = 18
 theme_override_constants/margin_top = 18
 theme_override_constants/margin_right = 18
 theme_override_constants/margin_bottom = 18
 
-[node name="Content" type="VBoxContainer" parent="Modal/Center/ModalPanel/Padding"]
+[node name="Content" type="VBoxContainer" parent="Modal/Center/ModalPanel/Padding" unique_id=1520814532]
 layout_mode = 2
 theme_override_constants/separation = 22
 
-[node name="ModalTitle" type="Label" parent="Modal/Center/ModalPanel/Padding/Content"]
+[node name="ModalTitle" type="Label" parent="Modal/Center/ModalPanel/Padding/Content" unique_id=1894218436]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.90, 0.83, 0.61, 1)
+theme_override_colors/font_color = Color(0.9, 0.83, 0.61, 1)
 theme_override_font_sizes/font_size = 30
 text = "设置"
 horizontal_alignment = 1
 
-[node name="ModalText" type="Label" parent="Modal/Center/ModalPanel/Padding/Content"]
+[node name="ModalText" type="Label" parent="Modal/Center/ModalPanel/Padding/Content" unique_id=298270772]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.63, 0.73, 0.61, 1)
 text = "让旅途更合心意。"
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="SettingsControls" type="VBoxContainer" parent="Modal/Center/ModalPanel/Padding/Content"]
+[node name="SettingsControls" type="VBoxContainer" parent="Modal/Center/ModalPanel/Padding/Content" unique_id=753649583]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 18
 
-[node name="VolumeCaption" type="HBoxContainer" parent="Modal/Center/ModalPanel/Padding/Content/SettingsControls"]
+[node name="VolumeCaption" type="HBoxContainer" parent="Modal/Center/ModalPanel/Padding/Content/SettingsControls" unique_id=1346382836]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Modal/Center/ModalPanel/Padding/Content/SettingsControls/VolumeCaption"]
+[node name="Label" type="Label" parent="Modal/Center/ModalPanel/Padding/Content/SettingsControls/VolumeCaption" unique_id=1382674286]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "主音量"
 
-[node name="VolumeValue" type="Label" parent="Modal/Center/ModalPanel/Padding/Content/SettingsControls/VolumeCaption"]
+[node name="VolumeValue" type="Label" parent="Modal/Center/ModalPanel/Padding/Content/SettingsControls/VolumeCaption" unique_id=1846800550]
 unique_name_in_owner = true
 layout_mode = 2
 text = "80%"
 
-[node name="VolumeSlider" type="HSlider" parent="Modal/Center/ModalPanel/Padding/Content/SettingsControls"]
+[node name="VolumeSlider" type="HSlider" parent="Modal/Center/ModalPanel/Padding/Content/SettingsControls" unique_id=1397659215]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 38)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 value = 80.0
 
-[node name="FullscreenToggle" type="CheckButton" parent="Modal/Center/ModalPanel/Padding/Content/SettingsControls"]
+[node name="FullscreenToggle" type="CheckButton" parent="Modal/Center/ModalPanel/Padding/Content/SettingsControls" unique_id=906830942]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 text = "全屏显示"
 
-[node name="Hint" type="Label" parent="Modal/Center/ModalPanel/Padding/Content/SettingsControls"]
+[node name="Hint" type="Label" parent="Modal/Center/ModalPanel/Padding/Content/SettingsControls" unique_id=1412452818]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.51, 0.63, 0.51, 1)
 theme_override_font_sizes/font_size = 14
@@ -245,11 +243,11 @@ text = "方向键 / Tab 选择 · Enter 确定 · Esc 返回"
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="Actions" type="HBoxContainer" parent="Modal/Center/ModalPanel/Padding/Content"]
+[node name="Actions" type="HBoxContainer" parent="Modal/Center/ModalPanel/Padding/Content" unique_id=1951990521]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="CancelButton" type="Button" parent="Modal/Center/ModalPanel/Padding/Content/Actions"]
+[node name="CancelButton" type="Button" parent="Modal/Center/ModalPanel/Padding/Content/Actions" unique_id=377545775]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 54)
 layout_mode = 2
@@ -257,7 +255,7 @@ size_flags_horizontal = 3
 mouse_default_cursor_shape = 2
 text = "返回"
 
-[node name="ConfirmButton" type="Button" parent="Modal/Center/ModalPanel/Padding/Content/Actions"]
+[node name="ConfirmButton" type="Button" parent="Modal/Center/ModalPanel/Padding/Content/Actions" unique_id=871282223]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 54)
 layout_mode = 2

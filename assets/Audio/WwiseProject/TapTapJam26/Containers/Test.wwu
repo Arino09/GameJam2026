@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{A706091B-DAD2-4BEA-BE6E-9170AA6F125E}" SchemaVersion="133">
+	<Containers>
+		<WorkUnit Name="Test" ID="{A706091B-DAD2-4BEA-BE6E-9170AA6F125E}" PersistMode="Standalone">
+			<ChildrenList>
+				<Sound Name="Attack" ID="{6961B989-F73E-4754-8D67-3CD25475F268}" ShortID="398902129">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{CB23FC37-367D-4836-9AD7-946BCE2CC78F}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{A7281BBC-008F-43AA-A9D8-5E6BE63D73FA}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="Armor_Cast_20" ID="{EC83CA87-3C45-4E70-A8D0-BB4368891FFD}">
+							<PropertyList>
+								<Property Name="FadeInDuration" Type="Real64" Value="0.03253"/>
+								<Property Name="FadeOutDuration" Type="Real64" Value="0.51636"/>
+								<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+								<Property Name="TrimBegin" Type="Real64" Value="0.03393"/>
+							</PropertyList>
+							<Language>SFX</Language>
+							<AudioFile>Armor_Cast_20.wav</AudioFile>
+							<MediaIDList>
+								<MediaID ID="867510329"/>
+							</MediaIDList>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="Armor_Cast_20" ID="{EC83CA87-3C45-4E70-A8D0-BB4368891FFD}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+				<Sound Name="Award" ID="{79737D64-C009-4B3A-B120-896C322F9E9A}" ShortID="778584277">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{CB23FC37-367D-4836-9AD7-946BCE2CC78F}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{A7281BBC-008F-43AA-A9D8-5E6BE63D73FA}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="Tap" ID="{7A3BFDA8-888D-4521-9C0E-070DD6414F2A}">
+							<Language>SFX</Language>
+							<AudioFile>Tap.wav</AudioFile>
+							<MediaIDList>
+								<MediaID ID="787459376"/>
+							</MediaIDList>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="Tap" ID="{7A3BFDA8-888D-4521-9C0E-070DD6414F2A}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+				<Sound Name="Button" ID="{E8CE55CB-59C7-4374-B261-BDF844FFA691}" ShortID="606415589">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{CB23FC37-367D-4836-9AD7-946BCE2CC78F}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{A7281BBC-008F-43AA-A9D8-5E6BE63D73FA}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="Button" ID="{2D6E6F9A-58B2-4ED9-B4A9-AAC388922F7E}">
+							<Language>SFX</Language>
+							<AudioFile>Button.wav</AudioFile>
+							<MediaIDList>
+								<MediaID ID="895242167"/>
+							</MediaIDList>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="Button" ID="{2D6E6F9A-58B2-4ED9-B4A9-AAC388922F7E}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+				<Sound Name="warm_seamlessloop_DONTUSEITINGAME_WEIXU" ID="{937D46E7-CD78-40CE-9E1D-4155F33F53D8}" ShortID="666097508">
+					<PropertyList>
+						<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+					</PropertyList>
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{CB23FC37-367D-4836-9AD7-946BCE2CC78F}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Music" ID="{A48A6FA4-7D9F-4BC5-965E-AF3EACDDA24F}" WorkUnitID="{A7281BBC-008F-43AA-A9D8-5E6BE63D73FA}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="warm_seamlessloop_DONTUSEITINGAME" ID="{292B19FA-9CDC-416C-B4F0-F2048399F9A7}">
+							<Language>SFX</Language>
+							<AudioFile>warm_seamlessloop_DONTUSEITINGAME.wav</AudioFile>
+							<MediaIDList>
+								<MediaID ID="750704390"/>
+							</MediaIDList>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="warm_seamlessloop_DONTUSEITINGAME" ID="{292B19FA-9CDC-416C-B4F0-F2048399F9A7}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+				<Sound Name="ESM_Game_Notification_81_Coin_Blip_Select_Tap_Button" ID="{5E37E506-CBDA-4D57-B215-08CB8CC97B23}" ShortID="631853484">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{CB23FC37-367D-4836-9AD7-946BCE2CC78F}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{A7281BBC-008F-43AA-A9D8-5E6BE63D73FA}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="ESM_Game_Notification_81_Coin_Blip_Select_Tap_Button" ID="{F93068CC-098F-474D-8824-F35A697CDF4E}">
+							<Language>SFX</Language>
+							<AudioFile>ESM_Game_Notification_81_Coin_Blip_Select_Tap_Button.wav</AudioFile>
+							<MediaIDList>
+								<MediaID ID="787299989"/>
+							</MediaIDList>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="ESM_Game_Notification_81_Coin_Blip_Select_Tap_Button" ID="{F93068CC-098F-474D-8824-F35A697CDF4E}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+			</ChildrenList>
+		</WorkUnit>
+	</Containers>
+</WwiseDocument>
