@@ -100,6 +100,8 @@ func _physics_process(_delta: float) -> void:
 		_show_message("出口尚未开启：靠近新手 Boss，轻点攻击。" if InputProfile.mobile else "出口尚未开启：靠近新手 Boss，按空格 / J 攻击。")
 		return
 	transitioning = true
+	var portal_kind: String = props.get_node("Portal").kind
+	WwiseManager.play(["enter_" + portal_kind, "enter"], self)
 	elf.movement_enabled = false
 	_cancel_touch()
 	call_deferred("_advance")
@@ -144,12 +146,14 @@ func interact() -> void:
 	if target.kind == "guide":
 		GameSession.tutorial_guide_spoken = true
 		target.activated = true
+		WwiseManager.play(["interact_" + target.kind, "interact"], self)
 		_show_message("向导：下方有三个宝箱，靠近后轻点开箱。沿土路向右进入山洞。" if InputProfile.mobile else "向导：下方有三个宝箱，靠近按 E 打开。沿土路向右走，就能进入山洞。", 7.0)
 	else:
 		var index := int(target.get_meta("chest_index"))
 		GameSession.tutorial_chests |= 1 << index
 		target.activated = true
 		target.caption = "已开启"
+		WwiseManager.play(["interact_" + target.kind, "interact"], self)
 		_show_message("宝箱已开启。沿土路向右，前往山洞。", 4.0)
 	_refresh_objective()
 	_save_progress()
@@ -165,10 +169,12 @@ func attack() -> void:
 		_show_message("距离太远，靠近新手 Boss 再攻击。")
 		return
 	GameSession.tutorial_boss_hits += 1
+	WwiseManager.play(["hit_" + boss.kind, "hit"], self)
 	boss.flash = 0.2
 	_update_boss()
 	if GameSession.tutorial_boss_hits == 3:
 		props.get_node("Portal").activated = true
+		WwiseManager.play(["defeat_" + boss.kind, "defeat"], self)
 		_show_message("新手 Boss 已击败！继续向右，从发光出口返回营地。", 6.0)
 	_refresh_objective()
 	_save_progress()
@@ -230,7 +236,10 @@ func return_to_title() -> void:
 func set_map_open(value: bool) -> void:
 	if transitioning:
 		return
+	if map_open == value:
+		return
 	map_open = value
+	WwiseManager.play("map_open" if value else "map_close", self)
 	elf.movement_enabled = not value
 	_cancel_touch()
 	mobile_controls.set_gameplay_enabled(not value)

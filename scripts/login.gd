@@ -136,6 +136,7 @@ func _open_modal(kind: String) -> void:
 		"error":
 			modal_title.text = "暂时无法完成"
 	modal.show()
+	WwiseManager.play("modal_open", self)
 	if kind == "settings":
 		volume_slider.grab_focus()
 	elif cancel_button.visible:
@@ -145,6 +146,7 @@ func _open_modal(kind: String) -> void:
 
 
 func _close_modal() -> void:
+	var was_visible := modal.visible
 	if modal_kind == "settings" and GameSession.save_settings() != OK:
 		modal_kind = "error"
 		settings_controls.hide()
@@ -152,6 +154,8 @@ func _close_modal() -> void:
 		confirm_button.text = "知道了"
 		return
 	modal.hide()
+	if was_visible:
+		WwiseManager.play("modal_close", self)
 	for button: Button in [start_button, continue_button, settings_button, exit_button]:
 		button.focus_mode = Control.FOCUS_ALL
 	if is_instance_valid(previous_focus):

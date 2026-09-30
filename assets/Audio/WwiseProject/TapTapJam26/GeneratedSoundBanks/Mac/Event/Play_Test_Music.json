@@ -1,0 +1,46 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "172",
+  "SoundBanks": [
+   {
+    "Id": "636537050",
+    "Type": "Event",
+    "GUID": "{A56FFE92-BE72-4834-896E-579477E303A3}",
+    "Language": "SFX",
+    "Hash": "{1B399B1E-5296-AD43-F609-2ED871A7EA9E}",
+    "ObjectPath": "Play_Test_Music",
+    "ShortName": "Play_Test_Music",
+    "Path": "Event/Play_Test_Music.bnk",
+    "Media": [
+     {
+      "Id": "750704390",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "warm_seamlessloop_DONTUSEITINGAME.wav",
+      "Path": "Media/750704390.wem",
+      "CachePath": "4A/{4A19CB6C-5EE5-295F-2748-458AB39629DC}.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "636537050",
+      "Name": "Play_Test_Music",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Test_Music",
+      "GUID": "{A56FFE92-BE72-4834-896E-579477E303A3}",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "750704390"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{F9782873-DE3C-9694-DC3E-802E9B80D81F}"
+ }
+}
