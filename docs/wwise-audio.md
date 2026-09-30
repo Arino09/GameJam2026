@@ -91,7 +91,7 @@
 
 缺少目标平台 `Init.bnk` 时不会启动 Wwise。本仓库实际提交的 Bank 只有 Windows、Mac、Web；Linux 原生音频未接通，云端玩法回归以静音方式进行。Android/iOS 的平台资源文件不等于已有对应 Bank。
 
-**Web 阻塞（2026-09-30 实测）**：上游 2025.1.9 的 nothreads WASM 音频输出仍使用 `SharedArrayBuffer`。在当前无跨源隔离的 HTTP/Pages 条件下，初始化会反复报 `AKSINK: Wwise Audio Context creation failure: ReferenceError: SharedArrayBuffer is not defined`，输出波形为零。桥接器现在在初始化前检查能力并静音降级，避免错误循环。没有修改响应头、安全策略、托管配置或部署。下一步需明确决定支持隔离的托管方式或更换不依赖该能力的音频输出实现；不能把导出通过理解成 Pages 上音频可用。
+**Web 阻塞（2026-09-30 实测）**：上游 2025.1.9 的 nothreads WASM 音频输出仍使用 `SharedArrayBuffer`。在当前无跨源隔离的 HTTP/Pages 条件下，初始化会反复报 `AKSINK: Wwise Audio Context creation failure: ReferenceError: SharedArrayBuffer is not defined`，输出波形为零。桥接器现在在初始化前检查能力并静音降级，避免错误循环。没有修改响应头、安全策略、托管配置或部署。后续本地试验已证实 Godot 自带 PWA 可以在无响应头的服务器上提供隔离；构建脚本还需同步缓存引用并等待 worker 激活，才能首次自动重载成功。默认 PWA 开关仍为 false，详见集成验证文档；不能把本地候选通过理解成 Pages 已部署可用。
 
 `post_event` 返回有效 Playing ID 只代表接受事件；Wwise Web 首次异步加载时也可能返回 0 后排队播放，不能把第一次 `posted=false` 直接理解为媒体失败。真实输出、回调和听感要分别验证。此次集成证据见 [音频集成验证](audio-integration-20260930.md)，下文 2026-09-22 记录保留为原 PR 作者的历史结果，不代表本次环境复现通过。
 
