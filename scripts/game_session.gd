@@ -176,6 +176,9 @@ func apply_volume(value: float) -> void:
 	volume = clampf(value, 0.0, 1.0)
 	AudioServer.set_bus_volume_linear(0, volume)
 	AudioServer.set_bus_mute(0, is_zero_approx(volume))
+	var audio := get_node_or_null("/root/WwiseManager")
+	if audio != null:
+		audio.set_master_volume(volume)
 
 
 func save_settings() -> Error:

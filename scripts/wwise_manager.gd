@@ -37,6 +37,8 @@ var _diagnostics: Array[String] = []
 var _warned: Dictionary = {}
 var _table_loaded := false
 var _listener_registered := false
+var _volume := 0.8
+var _emitters: Dictionary = {}
 
 
 func _ready() -> void:
@@ -83,6 +85,12 @@ func _notification(what: int) -> void:
 	elif what == NOTIFICATION_APPLICATION_FOCUS_IN:
 		if _current_scene_key != "":
 			_play_rule("scene_%s" % _current_scene_key, self)
+	elif what == NOTIFICATION_APPLICATION_PAUSED:
+		if _initialized and _owns_lifecycle:
+			_wwise.call("suspend", false)
+	elif what == NOTIFICATION_APPLICATION_RESUMED:
+		if _initialized and _owns_lifecycle:
+			_wwise.call("wakeup_from_suspend")
 	elif what == NOTIFICATION_EXIT_TREE or what == NOTIFICATION_CRASH:
 		if _initialized and _owns_lifecycle and _has_method("shutdown"):
 			_wwise.call("shutdown")
@@ -155,12 +163,31 @@ func play_test_with_callback(callback: Callable, source: Node = self) -> bool:
 	if event == null or not event.has_method("post_callback"):
 		return false
 	var target: Node = source if is_instance_valid(source) else self
+	_apply_emitter_volume(target)
 	var flags: int = AK_END_OF_EVENT | AK_DURATION
 	var playing_id: Variant = event.call("post_callback", target, flags, callback)
 	if playing_id == null or int(playing_id) <= 0:
 		_warn_once("post_failed:test_play_callback", "Wwise accepted no playing ID for test_play callback post.")
 		return false
 	return true
+
+
+func set_master_volume(value: float) -> void:
+	_volume = clampf(value, 0.0, 1.0)
+	for id: int in _emitters.keys():
+		var emitter: Node = _emitters[id].get_ref()
+		if not is_instance_valid(emitter):
+			_emitters.erase(id)
+		else:
+			_apply_emitter_volume(emitter)
+
+
+func _apply_emitter_volume(emitter: Node) -> void:
+	if not _initialized or not _has_method("set_game_object_output_bus_volume"):
+		return
+	_emitters[emitter.get_instance_id()] = weakref(emitter)
+	if not _wwise.call("set_game_object_output_bus_volume", emitter, self, _volume):
+		_warn_once("volume_failed", "Wwise output volume could not be applied.")
 
 
 func get_status() -> Dictionary:
@@ -195,9 +222,16 @@ func _initialize() -> void:
 
 
 func _do_initialize() -> void:
+	if OS.has_feature("web") and not bool(JavaScriptBridge.eval("typeof SharedArrayBuffer !== 'undefined' && globalThis.crossOriginIsolated === true")):
+		_warn_once("web_audio_unavailable", "Wwise Web audio requires SharedArrayBuffer and cross-origin isolation; continuing silently.")
+		return
 	if not Engine.has_singleton(WWISE_SINGLETON):
 		_warn_once("missing_singleton", "Wwise extension not found; audio bridge is disabled.")
 		return
+	if not FileAccess.file_exists(_platform_bank_root().path_join("Init.bnk")):
+		_warn_once("missing_platform_bank", "No Init.bnk for %s; audio is disabled on this platform." % _platform_name())
+		return
+	_volume = GameSession.volume
 	_wwise = Engine.get_singleton(WWISE_SINGLETON)
 	if not _has_method("init") or not _has_method("is_initialized"):
 		_warn_once("bad_singleton", "Wwise singleton is missing the expected runtime API.")
@@ -328,6 +362,7 @@ func _post_event(event_name: String, source: Node, diagnostic_key: String) -> bo
 	if event == null:
 		return false
 	var target: Node = source if is_instance_valid(source) else self
+	_apply_emitter_volume(target)
 	var playing_id: Variant = event.call("post", target)
 	# A valid playing ID proves Wwise accepted the event. It does not prove that
 	# a physical output device is audible, so diagnostics deliberately say post.

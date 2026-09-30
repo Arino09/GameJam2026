@@ -83,11 +83,17 @@
 
 `assets/Audio/audio_events.tsv` 不是导入资源（没有 `.import` 文件），Godot 的 `export_filter="all_resources"` 默认不会把它打进 PCK。导出预设必须在 `include_filter` 里显式加上 `*.tsv`（见 `export_presets.cfg` 的 `[preset.0]`），否则运行时 `FileAccess.open(res://assets/Audio/audio_events.tsv)` 会返回 null，`WwiseManager` 只会记录一次 `Wwise audio table not found` 诊断并继续以空规则表运行；新增导出预设（例如未来的 Windows Desktop 预设）时要同步加上这条 `include_filter`。
 
-### 关于 AK_AlreadyInitialized
+### 生命周期、音量与降级
 
-`scripts/wwise_manager.gd` 是当前唯一接入场景树的初始化入口（`project.godot` 的 `[autoload]` 中的 `WwiseManager`），它在 `_initialize()`（约第 140 行）里调用一次 `Wwise.call("init")`。Wwise 插件自带的 `addons/Wwise/runtime/wwise_runtime_manager.gd` 在其 `_init()`（第 8 行）里也会调用 `Wwise.init()`，但该文件目前没有 `plugin.cfg`、没有出现在 `project.godot` 的 `[autoload]` 或 `[editor_plugins]` 中，也没有被任何 `.tscn` 引用挂载——它是死代码，本次未能复现 `AK_AlreadyInitialized`（Windows headless 冒烟测试和 `--quit-after` 场景实例化都只打印一次 "Sound engine initialized successfully"）。为防止将来有人把这个插件自带的运行时管理器也接成 autoload 造成重复初始化，`wwise_manager.gd::_initialize()` 现在会先调用 `is_initialized()`，只有尚未初始化时才调用 `init()`，否则记录一次 `already_initialized` 诊断并直接沿用现有的初始化状态。
+编辑器扩展会自动添加 `WwiseRuntimeManager` autoload；它不是死代码。集成分支让它在项目桥接器存在时交出生命周期，由 `WwiseManager` 初始化、render 和 shutdown。桥接器保留已有 `owns_lifecycle` 防重复保护。运行时脚本动态获取 singleton，扩展缺失时也可解析。
 
-Wwise 扩展缺失、初始化失败或 Bank 不存在时，桥接器只记录一次诊断并让游戏继续运行。`post_event` 返回有效 Playing ID 只代表 Wwise 接受了事件，不代表当前设备一定能听到声音；真实听感仍需在有音频输出的运行环境中验证。
+`GameSession.apply_volume()` 同时更新 Godot 主总线和 Wwise 桥接器；桥接器使用上游 `set_game_object_output_bus_volume` 为当前默认 listener 设置各发声对象的输出增益，在 post 前应用保存的音量，更新正在播放的对象，并清理已销毁场景对象的弱引用。0 为静音。这覆盖当前事件的直接输出；后续若引入独立辅助发送/混响，需要音频同学配置统一主音量 RTPC 并另行验证。
+
+缺少目标平台 `Init.bnk` 时不会启动 Wwise。本仓库实际提交的 Bank 只有 Windows、Mac、Web；Linux 原生音频未接通，云端玩法回归以静音方式进行。Android/iOS 的平台资源文件不等于已有对应 Bank。
+
+**Web 阻塞（2026-09-30 实测）**：上游 2025.1.9 的 nothreads WASM 音频输出仍使用 `SharedArrayBuffer`。在当前无跨源隔离的 HTTP/Pages 条件下，初始化会反复报 `AKSINK: Wwise Audio Context creation failure: ReferenceError: SharedArrayBuffer is not defined`，输出波形为零。桥接器现在在初始化前检查能力并静音降级，避免错误循环。没有修改响应头、安全策略、托管配置或部署。下一步需明确决定支持隔离的托管方式或更换不依赖该能力的音频输出实现；不能把导出通过理解成 Pages 上音频可用。
+
+`post_event` 返回有效 Playing ID 只代表接受事件；Wwise Web 首次异步加载时也可能返回 0 后排队播放，不能把第一次 `posted=false` 直接理解为媒体失败。真实输出、回调和听感要分别验证。此次集成证据见 [音频集成验证](audio-integration-20260930.md)，下文 2026-09-22 记录保留为原 PR 作者的历史结果，不代表本次环境复现通过。
 
 ## 手动测试
 
@@ -113,7 +119,7 @@ Godot_v4.7.2-stable_win64_console.exe --path . --script tools/wwise_play_test.gd
 
 实测（2026-09-22，Windows headless 与非 headless 均已验证，先后覆盖了改名前的 `Play_Test` 和改名后的 `Play_Test_Attack`）：`fDuration` 稳定为 `550.6875` 毫秒（`Armor_Cast_20.wav`），`is_auto_bank_loaded` 为 `true`，未出现过 `Media ... was not loaded for this source`；headless 模式下 Wwise 的音频渲染管线照常工作，`AK_DURATION` / `AK_END_OF_EVENT` 回调都能正常触发，不需要额外加 `--rendering-driver` 之类的参数。同批还追加验证了新填的 `ui_button`（`Play_Test_Button`）、`interact_guide`（`Play_Test_Award`）、`hit_boss`（`Play_Test_Attack`）、`scene_forest`（`Play_Test_Music`）四个代表性键，均无 `Media ... was not loaded` 报错；五个场景（`login`/`main_menu`/`tutorial_grass`/`tutorial_cave`/`forest`）headless 实例化也保持无脚本错误。
 
-替换正式事件前，先确认对应平台目录下的 Auto-Defined Bank（`GeneratedSoundBanks/<平台>/Event/<EventName>.bnk`）和其松散媒体文件都存在；本仓库目前已有 Windows、Web、Mac、Android、iOS，未发现 Linux Bank。编辑 `audio_events.tsv` 后重启这次测试或重新运行游戏即可生效，当前桥接器没有热重载表格。
+替换正式事件前，先确认对应平台目录下的 Auto-Defined Bank（`GeneratedSoundBanks/<平台>/Event/<EventName>.bnk`）和其松散媒体文件都存在；本仓库目前已有 Windows、Web、Mac Bank，未发现 Linux、Android、iOS Bank。编辑 `audio_events.tsv` 后重启这次测试或重新运行游戏即可生效，当前桥接器没有热重载表格。
 
 ## 跨平台手动检查：F9 热键和控制台状态行
 
