@@ -1,6 +1,7 @@
 """Version Godot assets and keep the built-in PWA cache references consistent."""
 import argparse
 import hashlib
+import re
 from pathlib import Path
 
 
@@ -52,6 +53,11 @@ def version_assets(root: Path) -> str:
                 content = content.replace(
                     'new Promise((resolve) => {\n\t\t\t\t\tsetTimeout(() => resolve(), 2000);',
                     "new Promise((resolve, reject) => {\n\t\t\t\t\tsetTimeout(() => reject(new Error('Audio isolation setup timed out. Reload to retry.')), 15000);")
+        if path.name.endswith('.service.worker.js'):
+            # CacheStorage is origin-wide. Keep built-in worker cleanup within
+            # this preview's own scope, even if another Godot game shares origin.
+            content = re.sub(r"(const CACHE_PREFIX = [^;\n]+);",
+                             r"\1 + encodeURIComponent(self.registration.scope) + ':';", content)
         path.write_text(content)
     for old, new in renames.items():
         (root / old).rename(root / new)

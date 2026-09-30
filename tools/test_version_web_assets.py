@@ -26,7 +26,7 @@ new Promise((resolve) => {
 ''')
             (root / 'index.offline.html').write_text('index.icon.png')
             (root / 'index.manifest.json').write_text('{"start_url":"index.html","icons":[{"src":"index.icon.png"}]}')
-            (root / 'index.service.worker.js').write_text('const CACHED_FILES = ["index.html","index.js","index.offline.html"]; const CACHEABLE_FILES = ["index.wasm","index.side.wasm","index.pck"];')
+            (root / 'index.service.worker.js').write_text('const CACHE_PREFIX = \"Moon-sw-cache-\"; const CACHED_FILES = ["index.html","index.js","index.offline.html"]; const CACHEABLE_FILES = ["index.wasm","index.side.wasm","index.pck"];')
             prefix = module.version_assets(root)
             html = (root / 'index.html').read_text()
             worker = (root / f'{prefix}.service.worker.js').read_text()
@@ -39,6 +39,7 @@ new Promise((resolve) => {
                 self.assertIn(f'{prefix}.{suffix}', worker)
                 self.assertTrue((root / f'{prefix}.{suffix}').exists())
             self.assertIn('index.offline.html', worker)
+            self.assertIn('encodeURIComponent(self.registration.scope)', worker)
             self.assertIn(f'{prefix}.icon.png', (root / f'{prefix}.manifest.json').read_text())
             self.assertIn(f'{prefix}.icon.png', (root / 'index.offline.html').read_text())
 
