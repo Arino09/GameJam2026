@@ -6,6 +6,8 @@ GODOT_BIN="${GODOT_BIN:-godot}"
 cd "$PROJECT_DIR"
 rm -rf "$PROJECT_DIR/build/web"
 mkdir -p build/web
+# Keep local QA screenshots and preserved deployment artifacts out of imports.
+touch build/.gdignore
 "$GODOT_BIN" --headless --path "$PROJECT_DIR" --editor --import --quit
 "$GODOT_BIN" --headless --path "$PROJECT_DIR" --export-release Web build/web/index.html
 for file in index.html index.js index.wasm index.pck; do
