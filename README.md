@@ -104,4 +104,26 @@ python3 -m http.server 8000 --directory build/web
 
 打开 <http://localhost:8000>。不要直接双击 HTML 文件；浏览器需要通过 HTTP 加载 WASM 和资源包。可通过 `GODOT_BIN=/path/to/godot bash tools/build-web.sh` 指定引擎。
 
+### Linux 云端环境初始化
+
+在 Linux x86_64 云端 checkout 后运行（需要 `bash`、`curl`、`unzip`、`sha512sum`、`awk` 和 `python3`）：
+
+```sh
+bash tools/setup-cloud.sh
+source .godot/cloud/env.sh
+godot --version
+bash tools/build-web.sh
+for test in display mobile_controls forest scene_flow tutorial; do
+  godot --headless --fixed-fps 60 --path . --script "tools/test_${test}.gd" || break
+done
+```
+
+初始化脚本从 Godot 官方发布下载并校验 4.7.2 引擎及同版本 Web 模板，放入 `.godot/cloud/`，同时将 XDG 数据、缓存、配置目录设为工作区内可写位置，不需要管理员权限。每个新终端先执行 `source .godot/cloud/env.sh`，避免误用镜像预装的其他 Godot 版本；删除 `.godot/` 或创建新容器后需重新初始化。下载包含完整模板归档（约 1.2 GiB），只安装其中的 Web 模板。
+
+上述相对路径命令应在仓库根目录执行；脚本本身可通过绝对路径从任意目录调用。每次初始化（包括重复运行）都需要能访问 GitHub 官方发布及其下载重定向地址，并会重新下载、校验和覆盖同版本安装。`bash tools/setup-cloud.sh` 只生成环境文件，不会改变调用它的父 shell 的 PATH，也不会修改 shell 启动文件；必须另外 `source`。环境文件包含绝对路径，移动 checkout 后应重新运行初始化脚本。
+
+如云端平台支持保存启动命令，可将 `bash tools/setup-cloud.sh` 配置为 checkout 后的初始化步骤。这是仓库内可复现脚本，不会自动修改平台保存的环境配置。安装结果、环境文件和构建产物均不提交；脚本及本文档需要经审阅提交后才会进入后续 checkout。现有 GitHub Actions 仍使用 `tools/install-godot-ci.sh`，自动构建部署流程保持不变。
+
 Web 使用兼容渲染器和单线程导出，不依赖 GitHub Pages 无法自定义的跨源隔离响应头。输出为 `build/web/index.html` 及同目录资源，构建目录不提交到仓库。Pages 部署仅使用 GitHub 自带的临时令牌，无需额外部署密钥。
+
+Web 预设启用了移动端纹理压缩，项目必须同时设置 `rendering/textures/vram_compression/import_etc2_astc=true`，让 Linux 构建机也导入移动端纹理格式。缺少该项时，Godot 4.7.2 的 Web 项目配置校验会返回失败但不给出具体错误文字，表现为 `Cannot export project ... due to configuration errors` 后空白；不能据此认定模板缺失。
