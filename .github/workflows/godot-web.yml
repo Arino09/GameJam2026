@@ -6,19 +6,28 @@ on:
   pull_request:
     branches: [master]
   workflow_dispatch:
+    inputs:
+      publish_audio_preview:
+        description: '发布独立音频预览并完整保留当前正式版（仅 integration 分支）'
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: read
 
 concurrency:
-  group: godot-web-${{ github.ref }}
-  cancel-in-progress: true
+  # A preview waits behind production, and never cancels it. Normal master
+  # runs retain their original group and cancellation behavior.
+  group: ${{ github.event_name == 'workflow_dispatch' && inputs.publish_audio_preview && 'godot-web-refs/heads/master' || format('godot-web-{0}', github.ref) }}
+  cancel-in-progress: ${{ !(github.event_name == 'workflow_dispatch' && inputs.publish_audio_preview) }}
 
 env:
   GODOT_VERSION: '4.7.2'
 
 jobs:
   build:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.publish_audio_preview) }}
     name: Build Godot Web
     runs-on: ubuntu-24.04
     timeout-minutes: 20
@@ -83,3 +92,72 @@ jobs:
       - name: Deploy game
         id: deployment
         uses: actions/deploy-pages@v4
+
+
+  preview_request:
+    name: Validate audio preview request
+    if: github.event_name == 'workflow_dispatch' && inputs.publish_audio_preview
+    runs-on: ubuntu-24.04
+    permissions: {}
+    steps:
+      - name: Reject any branch other than the authorized integration branch
+        env:
+          REQUEST_REF: ${{ github.ref }}
+          REQUEST_REPOSITORY: ${{ github.repository }}
+        run: |
+          test "$REQUEST_REPOSITORY" = 'Arino09/GameJam2026'
+          test "$REQUEST_REF" = 'refs/heads/integration/audio-pr1-20260930'
+
+  audio_preview:
+    name: Preserve production and publish audio preview
+    needs: preview_request
+    if: github.event_name == 'workflow_dispatch' && inputs.publish_audio_preview && github.ref == 'refs/heads/integration/audio-pr1-20260930' && github.repository == 'Arino09/GameJam2026'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    # Reuse only capabilities already present in the original workflow.
+    # Do not add actions:read, deployments:read, secrets, or change policies.
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: https://arino09.github.io/GameJam2026/preview/audio/
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PUBLISH_AUDIO_PREVIEW: 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Test publication safeguards
+        run: |
+          PYTHONDONTWRITEBYTECODE=1 python3 tools/test_publish_audio_preview.py
+          PYTHONDONTWRITEBYTECODE=1 python3 tools/test_version_web_assets.py
+      - name: Install Godot and Web export templates
+        run: bash tools/install-godot-ci.sh
+      - name: Build the immutable preview source SHA
+        run: bash tools/build-web.sh
+      - name: Select latest deployed production and verify live files
+        run: python3 tools/publish_audio_preview.py prepare
+      - name: Save preservation proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: audio-preview-preservation
+          path: build/audio-preview-publish/proof.json
+          if-no-files-found: error
+          retention-days: 14
+      - name: Package preserved production plus isolated preview
+        uses: actions/upload-pages-artifact@v3
+        with:
+          name: audio-preview-pages
+          path: build/audio-preview-publish/site/
+      - name: Recheck production snapshot and all file hashes immediately before deployment
+        run: python3 tools/publish_audio_preview.py recheck
+      - name: Deploy verified combined site using existing Pages environment
+        id: preview_deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: audio-preview-pages
+      - name: Verify formal files and exact preview SHA over HTTPS
+        run: python3 tools/publish_audio_preview.py verify
