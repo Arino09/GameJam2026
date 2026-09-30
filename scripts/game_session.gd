@@ -4,6 +4,7 @@ extends Node
 const SAVE_PATH := "user://progress.cfg"
 const SETTINGS_PATH := "user://settings.cfg"
 var progress_path := SAVE_PATH
+var settings_path := SETTINGS_PATH
 const MAP_SCENE := "res://scenes/forest.tscn"
 const DEFAULT_POSITION := Vector2(780.0 / 1536.0, 310.0 / 1024.0)
 const CAMP_SCENE := "res://scenes/main_menu.tscn"
@@ -28,9 +29,13 @@ var tutorial_boss_hits := 0
 
 
 func _ready() -> void:
+	# A same-origin preview must not overwrite the formal game's local save.
+	if OS.has_feature("audio_preview"):
+		progress_path = "user://audio_preview_progress.cfg"
+		settings_path = "user://audio_preview_settings.cfg"
 	load_progress()
 	var settings := ConfigFile.new()
-	if settings.load(SETTINGS_PATH) == OK:
+	if settings.load(settings_path) == OK:
 		var stored_volume: Variant = settings.get_value("audio", "volume", 0.8)
 		if (stored_volume is float or stored_volume is int) and is_finite(float(stored_volume)):
 			volume = clampf(float(stored_volume), 0.0, 1.0)
@@ -186,4 +191,4 @@ func save_settings() -> Error:
 	var settings := ConfigFile.new()
 	settings.set_value("audio", "volume", volume)
 	settings.set_value("display", "fullscreen", fullscreen)
-	return settings.save(SETTINGS_PATH)
+	return settings.save(settings_path)
